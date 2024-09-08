@@ -1,11 +1,15 @@
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import Ingredient from "@/components/recipe/Ingredient";
+import CookingSteps from "@/components/recipe/CookingSteps";
+import Ingredients from "@/components/recipe/Ingredients";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function RecipeScreen() {
+  const ingredients = [
+    {quantity: 0.25, unit: "c. à soupe", ingredient: "de farine"},
+  ]
+
   return (
     <ThemedView style={styles.container}>
       <ScrollView>
@@ -14,9 +18,9 @@ export default function RecipeScreen() {
         </ThemedView>
         <ThemedView style={styles.recipeContainer}>
           <ThemedText>Ingredients :</ThemedText>
-          <Ingredient quantity={0.25} unit={"c. à soupe"} ingredient="de farine"></Ingredient>
-          <Ingredient quantity={0.25} unit={"c. à soupe"} ingredient="de farine"></Ingredient>
-          <Ingredient quantity={0.25} unit={"c. à soupe"} ingredient="de farine"></Ingredient>
+          <Ingredients>{ingredients}</Ingredients>
+          <ThemedText>Cooking Steps :</ThemedText>
+          <CookingSteps>{["step 1", "done"]}</CookingSteps>
         </ThemedView>
       </ScrollView>
     </ThemedView>
