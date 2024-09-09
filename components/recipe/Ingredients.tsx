@@ -3,7 +3,7 @@ import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
 import { ThemedList } from "../ThemedList";
 
-interface IngredientProps {
+export interface IngredientProps {
   quantity: number,
   unit: string,
   ingredient: string,
