@@ -1,6 +1,7 @@
+import { StyleSheet } from "react-native";
 import { ThemedList } from "../ThemedList";
 import { ThemedText } from "../ThemedText";
-import { ThemedView } from "../ThemedView";
+import { ThemedView, ThemedViewProps } from "../ThemedView";
 
 function CookingStep({...otherProps}){
   return (
@@ -8,13 +9,20 @@ function CookingStep({...otherProps}){
   )
 }
 
-export default function CookingSteps({children}: {children: string[]}){
+export default function CookingSteps({style, children}: ThemedViewProps & {children: string[]}){
   return (
-    <ThemedView>
+    <ThemedView style={style}>
       <ThemedList 
+        style={styles.stepsList}
         data={children}
         renderItem={({item}) => <CookingStep>{`\u2023 ${item}`}</CookingStep>}
       />
     </ThemedView>
   )
 }
+
+const styles = StyleSheet.create({
+  stepsList: {
+    rowGap: 4
+  },
+})

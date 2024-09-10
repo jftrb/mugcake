@@ -5,6 +5,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Notes from "./Notes";
 
 type RecipeProps = {
     title: string,
@@ -28,21 +29,22 @@ export default function Recipe({title, prepInfo, ingredients, directions, notes}
     </ThemedView>
     <ThemedView style={styles.recipeContainer}>
         <ThemedText type="subtitle" style={styles.directionsTitle}>Ingredients :</ThemedText>
-        <Ingredients>{ingredients}</Ingredients>
+        <ThemedView style={styles.ingredients}>
+          <Ingredients>{ingredients}</Ingredients>
+        </ThemedView>
         <ThemedText type="subtitle" style={styles.directionsTitle}>Cooking Steps :</ThemedText>
-        <CookingSteps>{directions}</CookingSteps>
+        <CookingSteps style={styles.ingredients}>{directions}</CookingSteps>
     </ThemedView>
-    <ThemedView style={styles.recipeContainer}>
-        <ThemedText style={styles.note}>* you should avoid putting nuts</ThemedText>
+    <ThemedView style={styles.notesContainer}>
+      <Notes>{notes}</Notes>
     </ThemedView>
     </ScrollView>
   )
 }
 
+const interiorPadding = 12
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   headerImage: {
     color: '#808080',
     bottom: -90,
@@ -56,24 +58,27 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
   },
+  prepCardsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    columnGap: 16,
+    margin: 8,
+  },
+  prepCard: {
+  },
   recipeContainer: {
     gap: 8,
     marginBottom: 8,
+  },
+  ingredients: {
+    marginLeft: interiorPadding,
+    marginRight: interiorPadding,
   },
   directionsTitle: {
     paddingTop: 4,
   },
   notesContainer: {
     gap: 8,
-  },
-  note: {
-    fontWeight: "200",
-    fontStyle: "italic",
-  },
-  prepCardsContainer: {
-    flexDirection: "row",
-  },
-  prepCard: {
-    margin: 8,
+    marginLeft: interiorPadding/2,
   },
 });

@@ -10,7 +10,7 @@ export const mugcakeRecipe = {
         {quantity: 3, unit: "c. à soupe", ingredient: "de farine tout usage non blanchie"},
         {quantity: 2, unit: "c. à soupe", ingredient: "de cassonade"},
         {quantity: 2, unit: "c. à thé", ingredient: "de cacao"},
-        {quantity: 0.25, unit: "c. à thé", ingredient: "de podure à pâte"},
+        {quantity: 0.25, unit: "c. à thé", ingredient: "de poudre à pâte"},
         {quantity: 3, unit: "c. à soupe", ingredient: "de lait"},
         {quantity: 1, unit: "c. à soupe", ingredient: "d'huile de canola"},
         {quantity: 1, unit: "goutte", ingredient: "d'extrait de vanille"},

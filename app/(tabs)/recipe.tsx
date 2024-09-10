@@ -1,5 +1,5 @@
 import { mugcakeRecipe } from "@/assets/placeholders/recipe";
-import Recipe from "@/components/recipe/recipe";
+import Recipe from "@/components/recipe/Recipe";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet } from "react-native";
 
@@ -21,5 +21,6 @@ export default function RecipeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 12
   },
 });

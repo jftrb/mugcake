@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
-import { ThemedView } from "../ThemedView";
+import { ThemedView, ThemedViewProps } from "../ThemedView";
 import { ThemedList } from "../ThemedList";
 
 export interface IngredientProps {
@@ -12,8 +12,9 @@ export interface IngredientProps {
 function Ingredient({quantity, unit, ingredient} : IngredientProps) {
   return (
   <ThemedView style={styles.ingredientContainer}>
-    <input type="checkbox"/>
-    <ThemedText style={styles.textContainer}>({quantity}</ThemedText>
+    <ThemedText>
+      <input type="checkbox"/> ({quantity}
+    </ThemedText>
     <ThemedText style={styles.textContainer}>{unit})</ThemedText>
     <ThemedText style={styles.textContainer}>{ingredient}</ThemedText>
   </ThemedView>
@@ -21,20 +22,23 @@ function Ingredient({quantity, unit, ingredient} : IngredientProps) {
 
 export default function Ingredients({children}: {children: IngredientProps[]}){
   return (
-    <ThemedView>
-      <ThemedList 
-        data={children}
-        renderItem={({item}) => 
-          <Ingredient quantity={item.quantity} unit={item.unit} ingredient={item.ingredient}/>
-        }
-      />
-    </ThemedView>
+    <ThemedList 
+      style={styles.ingredientList}
+      data={children}
+      renderItem={({item}) => 
+        <Ingredient quantity={item.quantity} unit={item.unit} ingredient={item.ingredient}/>
+      }
+    />
   )
 }
 
 const styles = StyleSheet.create({
   ingredientContainer: {
     flexDirection: 'row',
+    alignContent: "center"
+  },
+  ingredientList: {
+    rowGap: 4
   },
   textContainer: {
     marginLeft: 4,
