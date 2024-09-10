@@ -3,7 +3,7 @@ import Recipe from "@/components/recipe/Recipe";
 import { ThemedView } from "@/components/ThemedView";
 import { StyleSheet } from "react-native";
 
-export default function RecipeScreen() {
+export default function RecipeTabScreen() {
   const ricardoExample = mugcakeRecipe
 
   return (
