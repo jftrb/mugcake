@@ -12,11 +12,12 @@ export interface IngredientProps {
 function Ingredient({quantity, unit, ingredient} : IngredientProps) {
   return (
   <ThemedView style={styles.ingredientContainer}>
-    <ThemedText>
-      <input type="checkbox"/> ({quantity}
-    </ThemedText>
-    <ThemedText style={styles.textContainer}>{unit})</ThemedText>
-    <ThemedText style={styles.textContainer}>{ingredient}</ThemedText>
+    <label>
+      <input type="checkbox"/>
+      <ThemedText> ({quantity}</ThemedText>
+      <ThemedText style={styles.textContainer}>{unit})</ThemedText>
+      <ThemedText style={styles.textContainer}>{ingredient}</ThemedText>
+    </label>
   </ThemedView>
 )}
 

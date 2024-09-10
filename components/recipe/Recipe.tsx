@@ -42,7 +42,7 @@ export default function Recipe({title, prepInfo, ingredients, directions, notes}
   )
 }
 
-const interiorPadding = 12
+const interiorPadding = 8
 
 const styles = StyleSheet.create({
   headerImage: {
