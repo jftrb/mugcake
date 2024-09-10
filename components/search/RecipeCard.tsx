@@ -3,8 +3,16 @@ import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import PrepCard from "../recipe/PrepCard";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { ThemedList } from "../ThemedList";
 
-export default function RecipeCard() {
+type CardProps = {
+    title: string,
+    totalTime: string,
+    tags: string[],
+    imageSource: string,
+}
+
+export default function RecipeCard({title, totalTime, tags, imageSource}: CardProps) {
     const borderColor = useThemeColor({}, 'text')
 
     const dynamicStyle = StyleSheet.create({
@@ -15,19 +23,27 @@ export default function RecipeCard() {
 
     return (
         <ThemedView style={[styles.horizontal, dynamicStyle.border, styles.border]}>
+            <ThemedView style={[styles.horizontal, , {flex: 1, padding: 4}]}>
             <Image 
                 style={styles.image}
-                source={{uri: 'https://reactnative.dev/img/tiny_logo.png'}}/>
+                source={{uri: imageSource}}/>
             <ThemedView style={styles.descriptionContainer}>
-                <ThemedText type='subtitle' style={{}}>Mugcake au Chocolat</ThemedText>
-                <ThemedView style={[styles.horizontal, styles.tagContainer]}>
-                    <ThemedText style={[styles.tag, dynamicStyle.border]}>Tag 1</ThemedText>
-                    <ThemedText style={[styles.tag, dynamicStyle.border]}>Tag 2</ThemedText>
-                    <ThemedText style={[styles.tag, dynamicStyle.border]}>Really Long Tag 3</ThemedText>
+                <ThemedText type='subtitle'>{title}</ThemedText>
+                <ThemedView>
+                    <ThemedList 
+                        style={styles.tagContainer}
+                        showsHorizontalScrollIndicator={false}
+                        horizontal
+                        data={tags}
+                        renderItem={({item}) => 
+                            <ThemedText style={[styles.tag, dynamicStyle.border]}>{item}</ThemedText>
+                        }
+                    />
                 </ThemedView>
             </ThemedView>
-            <ThemedView style={{justifyContent: 'center'}}>
-                <PrepCard label="Total Time" value="5 min"></PrepCard>
+            </ThemedView>
+            <ThemedView style={[styles.timeContainer, dynamicStyle.border]}>
+                <PrepCard label="Total Time" value={totalTime}></PrepCard>
             </ThemedView>
         </ThemedView>
     )
@@ -42,7 +58,7 @@ const styles = StyleSheet.create({
     border: {
         borderRadius: 16,
         borderWidth: 1,
-        padding: 8
+        padding: 4,
     },
     tagContainer : {
         columnGap: 8,
@@ -66,5 +82,13 @@ const styles = StyleSheet.create({
     image: {
         width: imgSize,
         height: imgSize,  
+    },
+    timeContainer: {
+        justifyContent: 'center', 
+        borderLeftWidth: 1,
+        padding: 8,
+        margin: -4,
+        borderTopRightRadius: 16,
+        borderBottomRightRadius: 16,
     },
 })
