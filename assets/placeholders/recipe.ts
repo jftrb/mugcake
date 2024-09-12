@@ -1,11 +1,15 @@
+
 export const mugcakeRecipe = {
+    id: '1',
     title: "Gâteau moelleux au chocolat dans une tasse",
+    imageSource: 'https://images.ricardocuisine.com/services/recipes/496x670_5769.jpg',
     prepInfo: {
         prepTime: "5 min",
         cookTime: "45 sec",
         totalTime: "5 min",
         yield: "1",
     },
+    tags: ['Tag 1', 'Tag 2', 'Tag 2', 'Tag 2', 'Tag 2', 'Really Long Tag 3'],
     ingredients: [
         {quantity: 3, unit: "c. à soupe", ingredient: "de farine tout usage non blanchie"},
         {quantity: 2, unit: "c. à soupe", ingredient: "de cassonade"},
@@ -25,3 +29,65 @@ export const mugcakeRecipe = {
         "Si tu veux en faire plusieurs, triple ou quadruple la recette et mélange-la dans un bol. Répartis ensuite la préparation dans trois ou quatre tasses ou ramequins d’une contenance de 125 ml (½ tasse). Attention, tu dois faire cuire les gâteaux un par un dans le micro-ondes pour obtenir une cuisson uniforme."
     ]
 }
+
+export const tofuRecipe = {
+    id: '2',
+    title: "Vietnamese tomato tofu",
+    imageSource: 'https://greenbowl2soul.com/wp-content/uploads/2023/03/Vietnamese-tofu-in-tomato-sauce-300x300.jpg',
+    prepInfo: {
+        prepTime: "10 min",
+        cookTime: "15 min",
+        totalTime: "25 min",
+        yield: "4",
+    },
+    tags: ['Tofu', 'Vegan', 'Vietnamese'],
+    ingredients: [
+        {quantity: 2, unit: "cups", ingredient: "firm tofu cubes"},
+        {quantity: 0.25, unit: "teaspoon", ingredient: "ground black pepper"},
+        {quantity: 0.25, unit: "teaspoon", ingredient: "garlic powder"},
+        {quantity: 1, unit: "teaspoon", ingredient: "cooking oil"},
+        {quantity: 1, unit: "", ingredient: "salt to taste"},
+        {quantity: 3, unit: "cups", ingredient: "chopped tomatoes"},
+        {quantity: 1, unit: "", ingredient: "medium red onion sliced"},
+        {quantity: 3, unit: "", ingredient: "stalks spring onion"},
+        {quantity: 0.25, unit: "cup", ingredient: "chopped cilantro"},
+        {quantity: 2, unit: "", ingredient: "large garlic cloves"},
+        {quantity: 1, unit: "", ingredient: "thai red chili"},
+        {quantity: 1, unit: "tablespoon", ingredient: "soy sauce"},
+        {quantity: 0.5, unit: "teaspoon", ingredient: "palm sugar"},
+        {quantity: 0.5, unit: "teaspoon", ingredient: "ground black pepper"},
+        {quantity: 1, unit: "", ingredient: "salt to taste"},
+        {quantity: 1, unit: "tablespoon", ingredient: "cooking oil"},
+        {quantity: 1, unit: "cup", ingredient: "water"},
+    ],
+    directions: [
+        "Put tofu cubes, oil, salt, pepper, and garlic powder in a bowl. Gently toss until all the cubes get evenly coated with the seasonings and oil.",
+        "Spread tofu cubes on a baking tray lined with a baking sheet, Bake in a preheated oven at 200°C (or, 400℉) for 12-15 minutes or until tofu starts turning golden brown.",
+        "Meanwhile, heat the oil in a pan. Add chopped garlic and saute until it starts turning brown. Add chopped red chili and the white part of spring onion. Saute for a few seconds.",
+        "Next, add sliced onion and cook until it turns translucent.",
+        "Add chopped tomatoes, salt, sugar, soy sauce, and pepper. Mix and cook on medium heat for around 7-8 minutes or until the tomatoes turn mushy. You may cover the pan to fasten this step. ",
+        "Pour a cup of water into the pan and cook for another 3-4 minutes on medium-high heat.",
+        "Finally add baked tofu cubes, green onions, and cilantro. Mix and cook for about a minute. ",
+        "Cover the pan and turn off the heat. Don't remove the lid for 5 minutes.",
+        "Serve hot with steamed Jasmine or sticky rice.",
+    ],
+    notes: [
+        "Use firm or extra-firm tofu to make this recipe.",
+        "To get rid of the excess water from tofu, press the tofu block using a tofu press. Or, wrap the block of tofu in kitchen paper towels and press it with something heavy like a jar of beans, for at least 15 minutes. When you remove excess moisture from the tofu, it absorbs the flavors of the dish in a better way.",
+        "Instead of baking, you can also shallow or deep-fry the tofu cubes until their edges start turning golden brown.",
+        "Don't overcook tofu, it will turn chewy.",
+        "Mix tofu cubes with the seasonings and oil gently otherwise, the cubes will break.",
+        "Fresh tomatoes are the best for this recipe but if you don't have that canned diced tomatoes can be used too.",
+        "Use juicy tomatoes otherwise the sauce won't get the right consistency. ",
+        "You can add a tablespoon of tomato paste for a rich tomato sauce.",
+        "I have sliced onion to use in this recipe but you can use chopped onion too, if you prefer smaller pieces of onion in the sauce.",
+        "Adding sugar is optional, if your tomatoes are already sweet you can skip it.",
+        "More recipe tips, tricks, and variation suggestions are shared in the post above, please follow them to make this recipe.",
+    ]
+}
+
+
+export const recipesTable = [
+    mugcakeRecipe,
+    tofuRecipe,
+]
