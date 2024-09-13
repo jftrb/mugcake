@@ -14,6 +14,7 @@ export default function CookingSteps({style, children}: ThemedViewProps & {child
     <ThemedView style={style}>
       <ThemedList 
         style={styles.stepsList}
+        scrollEnabled={false}
         data={children}
         renderItem={({item}) => <CookingStep>{`\u2023 ${item}`}</CookingStep>}
       />

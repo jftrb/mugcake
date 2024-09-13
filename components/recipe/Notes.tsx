@@ -14,6 +14,7 @@ export default function Notes({children}: {children: string[]}){
     <ThemedView>
       <ThemedList 
         data={children}
+        scrollEnabled={false}
         renderItem={({item}) => <Note>{`* ${item}`}</Note>}
       />
     </ThemedView>

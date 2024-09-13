@@ -1,7 +1,8 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "../ThemedText";
-import { ThemedView, ThemedViewProps } from "../ThemedView";
+import { ThemedView } from "../ThemedView";
 import { ThemedList } from "../ThemedList";
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 
 export interface IngredientProps {
   quantity: number,
@@ -11,20 +12,21 @@ export interface IngredientProps {
 
 function Ingredient({quantity, unit, ingredient} : IngredientProps) {
   return (
-  <ThemedView style={styles.ingredientContainer}>
-    <label>
-      <input type="checkbox"/>
-      <ThemedText> ({quantity}</ThemedText>
-      <ThemedText style={styles.textContainer}>{unit})</ThemedText>
-      <ThemedText style={styles.textContainer}>{ingredient}</ThemedText>
-    </label>
-  </ThemedView>
+    <ThemedView style={styles.ingredientContainer}>
+      <BouncyCheckbox 
+        textComponent={
+          <ThemedText style={{marginLeft: 4, paddingBottom: 4}}>{`(${quantity} ${unit}) ${ingredient}`}</ThemedText>
+        } 
+        textStyle={{textDecorationLine: "none", color: 'red'}}
+      />
+    </ThemedView>
 )}
 
 export default function Ingredients({children}: {children: IngredientProps[]}){
   return (
     <ThemedList 
       style={styles.ingredientList}
+      scrollEnabled={false}
       data={children}
       renderItem={({item}) => 
         <Ingredient quantity={item.quantity} unit={item.unit} ingredient={item.ingredient}/>

@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet, TextInput } from 'react-native';
 
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -34,7 +34,7 @@ export default function SearchTabScreen() {
       headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Search</ThemedText>
-        <input style={{flex: 1, borderRadius: 16, paddingLeft: 8, paddingRight: 8}}></input>
+        <TextInput style={{flex: 1, borderRadius: 16, paddingLeft: 8, paddingRight: 8, backgroundColor:'white'}}></TextInput>
         <ImageButton></ImageButton>
       </ThemedView>
       <ThemedText>{recipes.length} result{recipes.length != 1 ? 's' : ''}</ThemedText>

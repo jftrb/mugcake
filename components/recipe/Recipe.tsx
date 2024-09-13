@@ -4,7 +4,7 @@ import PrepCard from "@/components/recipe/PrepCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Image, StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native";
 import Notes from "./Notes";
 
 type RecipeProps = {
@@ -19,30 +19,30 @@ type RecipeProps = {
 export default function Recipe({title, imageSource, prepInfo, ingredients, directions, notes}: RecipeProps) {
   return (
     <ScrollView>
-    <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title" style={styles.title}>{title}</ThemedText>
-    </ThemedView>
-    <Image 
-      style={styles.image}
-      source={{uri: imageSource}}
-    />
-    <ThemedView style={styles.prepCardsContainer}>
-        <PrepCard style={styles.prepCard} label="Prep Time" value={prepInfo.prepTime}/>
-        <PrepCard style={styles.prepCard} label="Cook Time" value={prepInfo.cookTime}/>
-        <PrepCard style={styles.prepCard} label="Total Time" value={prepInfo.totalTime}/>
-        <PrepCard style={styles.prepCard} label="Portions" value={prepInfo.yield}/>
-    </ThemedView>
-    <ThemedView style={styles.recipeContainer}>
-        <ThemedText type="subtitle" style={styles.directionsTitle}>Ingredients :</ThemedText>
-        <ThemedView style={styles.ingredients}>
-          <Ingredients>{ingredients}</Ingredients>
-        </ThemedView>
-        <ThemedText type="subtitle" style={styles.directionsTitle}>Cooking Steps :</ThemedText>
-        <CookingSteps style={styles.ingredients}>{directions}</CookingSteps>
-    </ThemedView>
-    <ThemedView style={styles.notesContainer}>
-      <Notes>{notes}</Notes>
-    </ThemedView>
+      <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title" style={styles.title}>{title}</ThemedText>
+      </ThemedView>
+      <Image 
+        style={styles.image}
+        source={{uri: imageSource}}
+      />
+      <ThemedView style={styles.prepCardsContainer}>
+          <PrepCard style={styles.prepCard} label="Prep Time" value={prepInfo.prepTime}/>
+          <PrepCard style={styles.prepCard} label="Cook Time" value={prepInfo.cookTime}/>
+          <PrepCard style={styles.prepCard} label="Total Time" value={prepInfo.totalTime}/>
+          <PrepCard style={styles.prepCard} label="Portions" value={prepInfo.yield}/>
+      </ThemedView>
+      <ThemedView style={styles.recipeContainer}>
+          <ThemedText type="subtitle" style={styles.directionsTitle}>Ingredients :</ThemedText>
+          <ThemedView style={styles.ingredients}>
+            <Ingredients>{ingredients}</Ingredients>
+          </ThemedView>
+          <ThemedText type="subtitle" style={styles.directionsTitle}>Cooking Steps :</ThemedText>
+          <CookingSteps style={styles.ingredients}>{directions}</CookingSteps>
+      </ThemedView>
+      <ThemedView style={styles.notesContainer}>
+        <Notes>{notes}</Notes>
+      </ThemedView>
     </ScrollView>
   )
 }
