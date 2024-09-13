@@ -1,21 +1,19 @@
 import React from 'react'
-import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native'
+import { TouchableOpacity, View, Image, Text, StyleSheet, TouchableOpacityProps } from 'react-native'
 import { ThemedText } from './ThemedText'
 
-export default class ImageButton extends React.Component {
-  render() {
+export default function ImageButton({onPress} : TouchableOpacityProps) {
     return (
-      <TouchableOpacity style={styles.touchable}>
+      <TouchableOpacity style={styles.touchable} onPress={onPress}>
         <View style={styles.view}>
           <ThemedText style={styles.text}>{''}</ThemedText>
         </View>
         <Image
-          source={require('@/assets/images/icon.png')}
+          source={require('@/assets/images/search-icon.png')}
           style={[styles.image]} 
           resizeMode='cover'/>
       </TouchableOpacity>
     )
-  }
 }
 
 const styles = StyleSheet.create({
@@ -29,6 +27,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 0,
     borderRadius: 16,
+    backgroundColor: 'white'
   },
   touchable: {
     alignItems: 'center',

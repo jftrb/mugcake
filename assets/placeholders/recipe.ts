@@ -9,7 +9,7 @@ export const mugcakeRecipe = {
         totalTime: "5 min",
         yield: "1",
     },
-    tags: ['Tag 1', 'Tag 2', 'Tag 2', 'Tag 2', 'Tag 2', 'Really Long Tag 3'],
+    tags: ['Dessert', 'Easy', 'Tag 2', 'Tag 2', 'Tag 2', 'Really Long Tag 3'],
     ingredients: [
         {quantity: 3, unit: "c. à soupe", ingredient: "de farine tout usage non blanchie"},
         {quantity: 2, unit: "c. à soupe", ingredient: "de cassonade"},
@@ -40,7 +40,7 @@ export const tofuRecipe = {
         totalTime: "25 min",
         yield: "4",
     },
-    tags: ['Tofu', 'Vegan', 'Vietnamese'],
+    tags: ['Tofu', 'Vegan', 'Vietnamese', 'Tag 2'],
     ingredients: [
         {quantity: 2, unit: "cups", ingredient: "firm tofu cubes"},
         {quantity: 0.25, unit: "teaspoon", ingredient: "ground black pepper"},

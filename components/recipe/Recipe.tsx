@@ -8,37 +8,38 @@ import { ScrollView } from "react-native";
 import Notes from "./Notes";
 
 type RecipeProps = {
-    title: string,
-    imageSource: string,
-    prepInfo: {prepTime: string, cookTime: string, totalTime: string, yield: string},
-    ingredients: IngredientProps[],
-    directions: string[],
-    notes: string[],
+  title: string,
+  imageSource: string,
+  prepInfo: {prepTime: string, cookTime: string, totalTime: string, yield: string},
+  ingredients: IngredientProps[],
+  directions: string[],
+  notes: string[],
 }
 
+// TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function Recipe({title, imageSource, prepInfo, ingredients, directions, notes}: RecipeProps) {
   return (
     <ScrollView>
       <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title" style={styles.title}>{title}</ThemedText>
+        <ThemedText type="title" style={styles.title}>{title}</ThemedText>
       </ThemedView>
       <Image 
         style={styles.image}
         source={{uri: imageSource}}
       />
       <ThemedView style={styles.prepCardsContainer}>
-          <PrepCard style={styles.prepCard} label="Prep Time" value={prepInfo.prepTime}/>
-          <PrepCard style={styles.prepCard} label="Cook Time" value={prepInfo.cookTime}/>
-          <PrepCard style={styles.prepCard} label="Total Time" value={prepInfo.totalTime}/>
-          <PrepCard style={styles.prepCard} label="Portions" value={prepInfo.yield}/>
+        <PrepCard style={styles.prepCard} label="Prep Time" value={prepInfo.prepTime}/>
+        <PrepCard style={styles.prepCard} label="Cook Time" value={prepInfo.cookTime}/>
+        <PrepCard style={styles.prepCard} label="Total Time" value={prepInfo.totalTime}/>
+        <PrepCard style={styles.prepCard} label="Portions" value={prepInfo.yield}/>
       </ThemedView>
       <ThemedView style={styles.recipeContainer}>
-          <ThemedText type="subtitle" style={styles.directionsTitle}>Ingredients :</ThemedText>
-          <ThemedView style={styles.ingredients}>
-            <Ingredients>{ingredients}</Ingredients>
-          </ThemedView>
-          <ThemedText type="subtitle" style={styles.directionsTitle}>Cooking Steps :</ThemedText>
-          <CookingSteps style={styles.ingredients}>{directions}</CookingSteps>
+        <ThemedText type="subtitle" style={styles.directionsTitle}>Ingredients :</ThemedText>
+        <ThemedView style={styles.ingredients}>
+          <Ingredients>{ingredients}</Ingredients>
+        </ThemedView>
+        <ThemedText type="subtitle" style={styles.directionsTitle}>Cooking Steps :</ThemedText>
+        <CookingSteps style={styles.ingredients}>{directions}</CookingSteps>
       </ThemedView>
       <ThemedView style={styles.notesContainer}>
         <Notes>{notes}</Notes>

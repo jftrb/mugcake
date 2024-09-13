@@ -22,8 +22,8 @@ export default function Notes({children}: {children: string[]}){
 }
 
 const styles = StyleSheet.create({
-    note: {
-      fontWeight: "200",
-      fontStyle: "italic",
-    },
+  note: {
+    fontWeight: "200",
+    fontStyle: "italic",
+  },
 })
