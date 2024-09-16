@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { GestureResponderEvent, NativeSyntheticEvent, Pressable, StyleSheet, TextInput, TextInputEndEditingEventData, TextInputSubmitEditingEventData } from 'react-native';
+import { Pressable, StyleSheet, TextInput } from 'react-native';
 
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
@@ -57,12 +57,17 @@ export default function SearchTabScreen() {
         </TextInput>
         <ImageButton onPress={() => updateSearchResults(searchText)}></ImageButton>
       </ThemedView>
-      <ThemedText>{searchResults.length} result{searchResults.length != 1 ? 's' : ''}</ThemedText>
+      <ThemedText>{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</ThemedText>
       <ThemedList
         style={{rowGap: 12}}
         data={searchResults}
         scrollEnabled={false}
         renderItem={({item}) => 
+          /*
+          TODO :
+          Fix the link so that it only applies to the image/title/prep time regions to avoid overlap 
+          with tags links
+          */
           <Link href={`/recipe/${item.id}`} asChild>
             <Pressable>
               <RecipeCard 

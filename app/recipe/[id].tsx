@@ -14,9 +14,9 @@ export default function RecipeTabScreen() {
 
 
   const { id } = useLocalSearchParams();
-  const recipe = recipesTable.find((recipe) => recipe.id == id)
+  const recipe = recipesTable.find((recipe) => recipe.id === id)
 
-  if (recipe == undefined) {
+  if (recipe === undefined) {
     return <NotFoundScreen/>
   }
   else {

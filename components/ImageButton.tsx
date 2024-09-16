@@ -1,5 +1,5 @@
 import React from 'react'
-import { TouchableOpacity, View, Image, Text, StyleSheet, TouchableOpacityProps } from 'react-native'
+import { TouchableOpacity, View, Image, StyleSheet, TouchableOpacityProps } from 'react-native'
 import { ThemedText } from './ThemedText'
 
 export default function ImageButton({onPress} : TouchableOpacityProps) {
