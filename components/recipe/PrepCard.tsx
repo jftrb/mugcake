@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { ThemedView, ThemedViewProps } from "../ThemedView";
 
-type PrepCardProps = ThemedViewProps & {
+export type PrepCardProps = ThemedViewProps & {
     label: string, 
     value: string,
 }

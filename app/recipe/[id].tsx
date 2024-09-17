@@ -5,6 +5,7 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import { StyleSheet } from "react-native";
 import NotFoundScreen from "../+not-found";
 import { useEffect } from "react";
+import RecipeEdit from "@/components/recipe/edit/RecipeEdit";
 
 export default function RecipeTabScreen() {
   const navigation = useNavigation()
@@ -22,13 +23,7 @@ export default function RecipeTabScreen() {
   else {
     return (
       <ThemedView style={styles.container}>
-        <Recipe 
-          title={recipe.title}
-          imageSource={recipe.imageSource}
-          prepInfo={recipe.prepInfo}
-          ingredients={recipe.ingredients}
-          directions={recipe.directions}
-          notes={recipe.notes}/>
+        <RecipeEdit recipeProps={recipe}/>
       </ThemedView>
     )
   }

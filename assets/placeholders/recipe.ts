@@ -2,6 +2,7 @@
 export const mugcakeRecipe = {
     id: '1',
     title: "Gâteau moelleux au chocolat dans une tasse",
+    url: 'https://www.ricardocuisine.com/recettes/5769-gateau-moelleux-au-chocolat-dans-une-tasse',
     imageSource: 'https://images.ricardocuisine.com/services/recipes/496x670_5769.jpg',
     prepInfo: {
         prepTime: "5 min",
@@ -33,6 +34,7 @@ export const mugcakeRecipe = {
 export const tofuRecipe = {
     id: '2',
     title: "Vietnamese tomato tofu",
+    url: 'https://greenbowl2soul.com/vietnamese-tofu-in-tomato-sauce/',
     imageSource: 'https://greenbowl2soul.com/wp-content/uploads/2023/03/Vietnamese-tofu-in-tomato-sauce-300x300.jpg',
     prepInfo: {
         prepTime: "10 min",

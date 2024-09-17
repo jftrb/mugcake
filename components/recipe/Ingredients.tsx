@@ -15,7 +15,7 @@ function Ingredient({quantity, unit, ingredient} : IngredientProps) {
     <ThemedView style={styles.ingredientContainer}>
       <BouncyCheckbox 
         textComponent={
-          <ThemedText style={{marginLeft: 4, paddingBottom: 4}}>{`(${quantity} ${unit}) ${ingredient}`}</ThemedText>
+          <ThemedText style={styles.textContainer}>{`(${quantity} ${unit}) ${ingredient}`}</ThemedText>
         } 
         textStyle={{textDecorationLine: "none", color: 'red'}}
       />
@@ -41,9 +41,11 @@ const styles = StyleSheet.create({
     alignContent: "center"
   },
   ingredientList: {
-    rowGap: 4
+    rowGap: 6
   },
   textContainer: {
-    marginLeft: 4,
+    marginLeft: 8, 
+    paddingBottom: 4, 
+    marginTop: -2
   }
 })
