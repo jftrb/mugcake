@@ -1,11 +1,13 @@
-import CookingSteps from "@/components/recipe/CookingSteps";
+import CookingSteps, { StepProps } from "@/components/recipe/CookingSteps";
 import Ingredients, { IngredientProps } from "@/components/recipe/Ingredients";
 import PrepCard from "@/components/recipe/PrepCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Image, StyleSheet } from "react-native";
 import { ScrollView } from "react-native";
-import Notes from "./Notes";
+import Notes, { NoteProps } from "./Notes";
+import { ThemedTextInput } from "../ThemedTextInput";
+import EditableTags from "./edit/EditableTags";
 
 export type RecipeProps = {
   recipeProps: {
@@ -15,38 +17,81 @@ export type RecipeProps = {
     imageSource: string,
     prepInfo: {prepTime: string, cookTime: string, totalTime: string, yield: string},
     ingredients: IngredientProps[],
-    directions: string[],
-    notes: string[],
+    directions: StepProps[],
+    notes: NoteProps[],
   }
 }
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
-export default function Recipe({recipeProps}: RecipeProps) {
+export default function Recipe({recipeProps, editable}: RecipeProps & {editable?: boolean}) {
   return (
     <ScrollView>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title" style={styles.title}>{recipeProps.title}</ThemedText>
-      </ThemedView>
-      <Image 
-        style={styles.image}
-        source={{uri: recipeProps.imageSource}}
-      />
+      {!editable ?
+        <>
+          <ThemedView style={styles.titleContainer}>
+            <ThemedText type="title" style={styles.title}>{recipeProps.title}</ThemedText>
+          </ThemedView>
+          <Image 
+            style={styles.image}
+            source={{uri: recipeProps.imageSource}}
+          />
+        </>
+        :
+        <>
+          <ThemedView style={styles.titleContainer}>
+            <ThemedTextInput multiline type='title' defaultValue={recipeProps.title} style={{margin:4}}></ThemedTextInput>
+          </ThemedView>
+          <ThemedView style={{flexDirection: 'row'}}>
+            <EditableTags>{recipeProps.tags}</EditableTags>
+          </ThemedView>
+        </>
+      }
+
+      {/* Recipe Prep Cards */}
       <ThemedView style={styles.prepCardsContainer}>
-        <PrepCard style={styles.prepCard} label="Prep Time" value={recipeProps.prepInfo.prepTime}/>
-        <PrepCard style={styles.prepCard} label="Cook Time" value={recipeProps.prepInfo.cookTime}/>
-        <PrepCard style={styles.prepCard} label="Total Time" value={recipeProps.prepInfo.totalTime}/>
-        <PrepCard style={styles.prepCard} label="Portions" value={recipeProps.prepInfo.yield}/>
+        <PrepCard editable={editable}
+          style={styles.prepCard} 
+          label="Prep Time"
+           value={recipeProps.prepInfo.prepTime}
+        />
+        <PrepCard editable={editable}
+          style={styles.prepCard} 
+          label="Cook Time"
+           value={recipeProps.prepInfo.cookTime}
+        />
+        <PrepCard editable={editable}
+          style={styles.prepCard} 
+          label="Total Time"
+           value={recipeProps.prepInfo.totalTime}
+        />
+        <PrepCard editable={editable}
+          style={styles.prepCard} 
+          label="Portions" 
+          value={recipeProps.prepInfo.yield}
+        />
       </ThemedView>
       <ThemedView style={styles.recipeContainer}>
+
+        {/* Ingredients */}
         <ThemedText type="subtitle" style={styles.directionsTitle}>Ingredients :</ThemedText>
         <ThemedView style={styles.ingredients}>
-          <Ingredients>{recipeProps.ingredients}</Ingredients>
+          <Ingredients editable={editable}>{recipeProps.ingredients}</Ingredients>
         </ThemedView>
+
+        {/* Cooking Steps */}
         <ThemedText type="subtitle" style={styles.directionsTitle}>Cooking Steps :</ThemedText>
-        <CookingSteps style={styles.ingredients}>{recipeProps.directions}</CookingSteps>
+        <CookingSteps 
+          editable={editable} 
+          style={styles.ingredients} 
+          data={recipeProps.directions}
+        />
       </ThemedView>
+
+      {/* Notes */}
       <ThemedView style={styles.notesContainer}>
-        <Notes>{recipeProps.notes}</Notes>
+        <Notes editable={editable}>
+          {recipeProps.notes}
+        </Notes>
       </ThemedView>
     </ScrollView>
   )

@@ -1,34 +1,23 @@
 import { ThemedFlatListProps, ThemedList } from "@/components/ThemedList";
 import { ThemedText } from "@/components/ThemedText";
-import { useState } from "react";
-import { Pressable } from "react-native";
+import { GestureResponderEvent, Pressable } from "react-native";
+
+export interface Editable {
+  editable?: boolean
+  onDeletePress: ((id: string) => void);
+}
 
 type EditableListProps<ItemT> = ThemedFlatListProps<ItemT> & {
-  createNewItem: (() => ItemT)
+  onPress: null | ((event: GestureResponderEvent) => void) | undefined
 }
 
-export default function EditableList<ItemT>({createNewItem, data, ...otherProps} : EditableListProps<ItemT>){
-  const [items, setItems] = useState(data)
-  
-
-function addEmptyItem(){
-  const list = data === null || data === undefined ? Array<ItemT>() : data
-  const newList = Array<ItemT>(list.length + 1)
-
-  for (let i = 0; i < list.length; i++) {
-    newList[i] = list[i];
-  }
-  newList[newList.length] = createNewItem() 
-
-  setItems(newList) 
-}
-
+export default function EditableList<ItemT>({onPress, data, ...otherProps} : EditableListProps<ItemT>){
   return (
     <>
-      <ThemedList data={items} {...otherProps}
+      <ThemedList data={data} {...otherProps}
       />
-      <Pressable>
-        <ThemedText onPress={() => {addEmptyItem()}}>+ Add</ThemedText>
+      <Pressable onPress={onPress} style={{marginLeft: 6}}>
+        <ThemedText>+ Add</ThemedText>
       </Pressable>
     </>
   )

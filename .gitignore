@@ -14,3 +14,4 @@ web-build/
 .DS_Store
 expo-env.d.ts
 *.env
+bookmarks-2024-09-16.json

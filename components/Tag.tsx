@@ -1,7 +1,8 @@
-import { GestureResponderEvent, Pressable, StyleSheet, Text } from "react-native";
+import { GestureResponderEvent, StyleSheet } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { ThemedView, ThemedViewProps } from "./ThemedView";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import RemoveButton from "./recipe/edit/RemoveButton";
 
 type TagProps = ThemedViewProps & {
     item: string
@@ -22,9 +23,7 @@ export default function Tag({style, item, editable, onPress, ...rest} : TagProps
         <ThemedView style={[styles.tagContainer, dynamicStyle.border, style]} {...rest}>
             <ThemedText>{item}</ThemedText>
             {editable ? 
-              <Pressable style={styles.deleteButton} onPress={onPress}>
-                <Text style={[styles.xButton]}>x</Text>
-              </Pressable> : 
+              <RemoveButton onPress={onPress}/> : 
               null
             }
         </ThemedView>
