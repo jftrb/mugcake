@@ -6,8 +6,6 @@ import { ThemedView } from "@/components/ThemedView";
 import { Image, StyleSheet } from "react-native";
 import { ScrollView } from "react-native";
 import Notes, { NoteProps } from "./Notes";
-import { ThemedTextInput } from "../ThemedTextInput";
-import EditableTags from "./edit/EditableTags";
 
 export type RecipeProps = {
   recipeProps: {
@@ -23,73 +21,59 @@ export type RecipeProps = {
 }
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
-export default function Recipe({recipeProps, editable}: RecipeProps & {editable?: boolean}) {
+export default function Recipe({recipeProps}: RecipeProps) {
   return (
     <ScrollView>
-      {!editable ?
-        <>
-          <ThemedView style={styles.titleContainer}>
-            <ThemedText type="title" style={styles.title}>{recipeProps.title}</ThemedText>
-          </ThemedView>
-          <Image 
-            style={styles.image}
-            source={{uri: recipeProps.imageSource}}
-          />
-        </>
-        :
-        <>
-          <ThemedView style={styles.titleContainer}>
-            <ThemedTextInput multiline type='title' defaultValue={recipeProps.title} style={{margin:4}}></ThemedTextInput>
-          </ThemedView>
-          <ThemedView style={{flexDirection: 'row'}}>
-            <EditableTags>{recipeProps.tags}</EditableTags>
-          </ThemedView>
-        </>
-      }
+      <ThemedView style={recipeStyles.titleContainer}>
+        <ThemedText type="title" style={recipeStyles.title}>{recipeProps.title}</ThemedText>
+      </ThemedView>
+      <Image 
+        style={recipeStyles.image}
+        source={{uri: recipeProps.imageSource}}
+      />
 
       {/* Recipe Prep Cards */}
-      <ThemedView style={styles.prepCardsContainer}>
-        <PrepCard editable={editable}
-          style={styles.prepCard} 
+      <ThemedView style={recipeStyles.prepCardsContainer}>
+        <PrepCard
+          style={recipeStyles.prepCard} 
           label="Prep Time"
-           value={recipeProps.prepInfo.prepTime}
+          value={recipeProps.prepInfo.prepTime}
         />
-        <PrepCard editable={editable}
-          style={styles.prepCard} 
+        <PrepCard
+          style={recipeStyles.prepCard} 
           label="Cook Time"
-           value={recipeProps.prepInfo.cookTime}
+          value={recipeProps.prepInfo.cookTime}
         />
-        <PrepCard editable={editable}
-          style={styles.prepCard} 
+        <PrepCard
+          style={recipeStyles.prepCard} 
           label="Total Time"
-           value={recipeProps.prepInfo.totalTime}
+          value={recipeProps.prepInfo.totalTime}
         />
-        <PrepCard editable={editable}
-          style={styles.prepCard} 
+        <PrepCard
+          style={recipeStyles.prepCard} 
           label="Portions" 
           value={recipeProps.prepInfo.yield}
         />
       </ThemedView>
-      <ThemedView style={styles.recipeContainer}>
+      <ThemedView style={recipeStyles.recipeContainer}>
 
         {/* Ingredients */}
-        <ThemedText type="subtitle" style={styles.directionsTitle}>Ingredients :</ThemedText>
-        <ThemedView style={styles.ingredients}>
-          <Ingredients editable={editable}>{recipeProps.ingredients}</Ingredients>
+        <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Ingredients :</ThemedText>
+        <ThemedView style={recipeStyles.ingredients}>
+          <Ingredients>{recipeProps.ingredients}</Ingredients>
         </ThemedView>
 
         {/* Cooking Steps */}
-        <ThemedText type="subtitle" style={styles.directionsTitle}>Cooking Steps :</ThemedText>
+        <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Cooking Steps :</ThemedText>
         <CookingSteps 
-          editable={editable} 
-          style={styles.ingredients} 
+          style={recipeStyles.ingredients} 
           data={recipeProps.directions}
         />
       </ThemedView>
 
       {/* Notes */}
-      <ThemedView style={styles.notesContainer}>
-        <Notes editable={editable}>
+      <ThemedView style={recipeStyles.notesContainer}>
+        <Notes>
           {recipeProps.notes}
         </Notes>
       </ThemedView>
@@ -99,7 +83,7 @@ export default function Recipe({recipeProps, editable}: RecipeProps & {editable?
 
 const interiorPadding = 8
 
-const styles = StyleSheet.create({
+export const recipeStyles = StyleSheet.create({
   headerImage: {
     color: '#808080',
     bottom: -90,

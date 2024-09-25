@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TextInputProps } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { ThemedView, ThemedViewProps } from "../ThemedView";
 import { ThemedTextInput } from "../ThemedTextInput";
@@ -8,14 +8,14 @@ export type PrepCardProps = ThemedViewProps & {
   value: string,
 }
 
-export default function PrepCard({label, value, editable, ...otherProps} : PrepCardProps & {editable?: boolean}){
+export default function PrepCard({label, value, editable, inputProps, ...otherProps} : PrepCardProps & {editable?: boolean, inputProps?: TextInputProps}){
   return (
     <ThemedView {...otherProps}>
       <ThemedText style={styles.cardLabel}>{label}</ThemedText>
       {!editable ?
         <ThemedText style={styles.cardValue}>{value}</ThemedText>
         :
-        <ThemedTextInput style={[styles.cardValue, styles.input]} defaultValue={value}/> 
+        <ThemedTextInput style={[styles.cardValue, styles.input]} {...inputProps} value={value}/> 
       }
     </ThemedView>
   )

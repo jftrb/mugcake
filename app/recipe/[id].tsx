@@ -2,10 +2,11 @@ import { recipesTable } from "@/assets/placeholders/recipe";
 import Recipe from "@/components/recipe/Recipe";
 import { ThemedView } from "@/components/ThemedView";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import NotFoundScreen from "../+not-found";
 import { useEffect } from "react";
 import { randomUUID } from "expo-crypto";
+import EditableRecipe from "@/components/recipe/edit/EditableRecipe";
 
 function addIdProp<T>(array: T[]) {
   const output: (T & {id: string})[] = []
@@ -45,9 +46,11 @@ export default function RecipeTabScreen() {
     }
 
     return (
-      <ThemedView style={styles.container}>
-        <Recipe editable={false} recipeProps={recipeWithIds}/>
-      </ThemedView>
+      <SafeAreaView style={styles.safeArea}>
+        <ThemedView style={styles.container}>
+          <EditableRecipe recipeProps={recipeWithIds}/>
+        </ThemedView>
+      </SafeAreaView>
     )
   }
 }
@@ -55,6 +58,11 @@ export default function RecipeTabScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 12
+    padding: 12,
+    paddingTop: 0,
   },
+  safeArea: {
+    flex: 1,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  }
 });

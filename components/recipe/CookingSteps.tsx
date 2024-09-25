@@ -18,11 +18,11 @@ function CookingStep({value, id, onDeletePress, editable, ...otherProps} : StepP
     return <ThemedText {...otherProps}>{`\u2023 ${value}`}</ThemedText>
   } else {
     return (
-      <ThemedView style={{flexDirection: 'row', flex: 1, marginRight: 20}}>
+      <ThemedView style={{flexDirection: 'row', flex: 1}}>
         <ThemedView>
           <RemoveButton style={{marginRight: 12, alignSelf: 'flex-start'}} onPress={() => onDeletePress(id)}/>
         </ThemedView>
-        <ThemedTextInput style={{borderWidth: 0.5, paddingRight: 0, marginRight: 12}} defaultValue={value} multiline></ThemedTextInput>
+        <ThemedTextInput style={{borderWidth: 0.5, flex: 1}} defaultValue={value} multiline></ThemedTextInput>
       </ThemedView>
     )
   }
