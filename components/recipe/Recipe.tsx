@@ -8,12 +8,12 @@ import { ScrollView } from "react-native";
 import Notes, { NoteProps } from "./Notes";
 import ImageButton from "../ImageButton";
 import { Link } from "expo-router";
-import { useForm } from "react-hook-form";
+import { TagProps } from "./Tags";
 
 export type RecipeProps = {
   title: string,
   url: string,
-  tags: string[],
+  tags: TagProps[],
   imageSource: string,
   prepInfo: {prepTime: string, cookTime: string, totalTime: string, yield: string},
   ingredients: IngredientProps[],
@@ -23,10 +23,6 @@ export type RecipeProps = {
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function Recipe({recipeProps}: {recipeProps: RecipeProps}) {
-  const { control, watch, handleSubmit } = useForm<RecipeProps>({
-    defaultValues: recipeProps
-  });
-  
   return (
     <>
       {/* Button Ribbon */}

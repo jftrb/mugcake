@@ -1,22 +1,20 @@
-import CookingSteps from "@/components/recipe/CookingSteps";
-import Ingredients from "@/components/recipe/Ingredients";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ScrollView } from "react-native";
 import { RecipeProps, recipeStyles } from "../Recipe";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import EditableTags from "./EditableTags";
-import Notes from "../Notes";
 import { Controller, useForm } from "react-hook-form";
 import ImageButton from "@/components/ImageButton";
 import PrepCard from "../PrepCard";
 import EditableNotes from "./EditableNotes";
 import EditableCookingSteps from "./EditableCookingSteps";
+import EditableIngredients from "./EditableIngredients";
 
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function EditableRecipe({recipeProps}: {recipeProps: RecipeProps}) {
-  const { control, watch, handleSubmit, formState: { errors } } = useForm<RecipeProps>({
+  const { control, handleSubmit, formState: { errors }, setFocus } = useForm<RecipeProps>({
     defaultValues: recipeProps
   });
 
@@ -29,10 +27,21 @@ export default function EditableRecipe({recipeProps}: {recipeProps: RecipeProps}
 
       <ScrollView>
         <ThemedView style={recipeStyles.titleContainer}>
-          <ThemedTextInput multiline type='title' defaultValue={recipeProps.title} style={{margin:4}}></ThemedTextInput>
+          <Controller
+            name="title"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+             <ThemedTextInput multiline 
+              type='title' 
+              value={value} 
+              onChangeText={onChange}
+              onBlur={onBlur}
+              style={{margin:4, textAlign: 'center'}}/>
+            )}
+          />
         </ThemedView>
         <ThemedView style={{flexDirection: 'row'}}>
-          <EditableTags>{recipeProps.tags}</EditableTags>
+          <EditableTags control={control} setFocus={setFocus}/>
         </ThemedView>
 
         {/* Recipe Prep Cards */}
@@ -48,7 +57,7 @@ export default function EditableRecipe({recipeProps}: {recipeProps: RecipeProps}
           {/* Ingredients */}
           <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Ingredients :</ThemedText>
           <ThemedView style={recipeStyles.editableListsContainers}>
-            <Ingredients editable>{recipeProps.ingredients}</Ingredients>
+            <EditableIngredients control={control}/>
           </ThemedView>
 
           {/* Cooking Steps */}
@@ -85,6 +94,7 @@ export default function EditableRecipe({recipeProps}: {recipeProps: RecipeProps}
               onChangeText:onChange
             }} />
         )} 
+        rules={{required: true}}
       />);
   }
 }

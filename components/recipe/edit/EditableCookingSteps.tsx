@@ -59,7 +59,7 @@ export default function EditableCookingSteps({ control }: Editable<RecipeProps>)
         )}
         <Pressable 
           onPress={() => {
-            console.log('adding cooking step')
+            console.log('Adding cooking step')
             append({value: '', id: randomUUID()})
           }}
           style={editStyles.deleteButtonPressArea}>

@@ -5,12 +5,13 @@ import PrepCard from "../recipe/PrepCard";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedList } from "../ThemedList";
 import { Link } from "expo-router";
-import Tag from "../Tag";
+import { TagProps } from "../recipe/Tags";
+import { Tag } from "../Tag";
 
 type CardProps = {
   title: string,
   totalTime: string,
-  tags: string[],
+  tags: TagProps[],
   imageSource: string,
 }
 
@@ -40,7 +41,7 @@ export default function RecipeCard({title, totalTime, tags, imageSource}: CardPr
               renderItem={({item}) => 
                 <Link href="/" asChild> 
                   <Pressable>
-                    <Tag item={item}/>
+                    <Tag item={item.value}/>
                   </Pressable>
                 </Link>
               }

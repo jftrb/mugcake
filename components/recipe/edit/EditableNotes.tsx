@@ -59,7 +59,7 @@ export default function EditableNotes({ control }: Editable<RecipeProps>){
         )}
         <Pressable 
           onPress={() => {
-            console.log('adding note')
+            console.log('Adding note')
             append({value: '', id: randomUUID()})
           }}
           style={editStyles.deleteButtonPressArea}>

@@ -36,9 +36,9 @@ export default function RecipeTabScreen() {
       url: recipe.url,
       imageSource: recipe.imageSource,
       prepInfo: recipe.prepInfo,
-      tags: recipe.tags,
       title: recipe.title,
       
+      tags: addIdProp(recipe.tags),
       ingredients: addIdProp(recipe.ingredients),
       directions: addIdProp(recipe.directions),
       notes: addIdProp(recipe.notes),

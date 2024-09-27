@@ -1,32 +1,34 @@
 import { type TextInputProps, StyleSheet, TextInput } from 'react-native';
 
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { opacity } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
 
-type ThemedTextInputProps = TextInputProps & {
+type ThemedTextProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
   lightColor?: string;
   darkColor?: string;
   type?: 'default' | 'title' | 'defaultSemiBold' | 'subtitle';
 };
 
-export function ThemedTextInput({
+export function ThemedWebInput({
   style,
   lightColor,
   darkColor,
   type = 'default',
   ...rest
-}: ThemedTextInputProps) {
+}: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
-
+  const backgroundColor = useThemeColor({ light: lightColor, dark: darkColor }, 'background');
+  
   return (
-    <TextInput
-      style={[
-        { color },
+    <input
+      style={Object.assign(
+        { color, backgroundColor, margin: 0, borderWidth: 0 },
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
         type === 'subtitle' ? styles.subtitle : undefined,
         style,
-      ]}
+      )}
       {...rest}
     />
   );

@@ -1,4 +1,4 @@
-import { addEmptyItem } from "../recipe/Ingredients";
+import { addEmptyItem } from "../recipe/edit/EditableIngredients";
 
 describe('testing extending a list', () => {
   test('Adding a new item to empty list should result in length of 1', () => {
