@@ -46,20 +46,24 @@ export default function SearchTabScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Search</ThemedText>
-        <TextInput 
-          style={styles.searchBox} 
-          onChangeText={setSearchText}
-          onSubmitEditing={() => updateSearchResults(searchText)} 
-          value={searchText}>
-        </TextInput>
-        <ImageButton onPress={() => updateSearchResults(searchText)}></ImageButton>
+      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}
+      contentStyle={styles.contentContainer}>
+      <ThemedView style={styles.searchHeaderContainer}>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">Search</ThemedText>
+          <TextInput 
+            style={styles.searchBox} 
+            onChangeText={setSearchText}
+            onSubmitEditing={() => updateSearchResults(searchText)} 
+            value={searchText}>
+          </TextInput>
+          <ImageButton onPress={() => updateSearchResults(searchText)}></ImageButton>
+        </ThemedView>
+        <ThemedText>{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</ThemedText>
       </ThemedView>
-      <ThemedText>{searchResults.length} result{searchResults.length !== 1 ? 's' : ''}</ThemedText>
+
       <ThemedList
-        style={{rowGap: 12}}
+        style={styles.recipeCardsContainer}
         data={searchResults}
         scrollEnabled={false}
         renderItem={({item}) => 
@@ -83,6 +87,8 @@ export default function SearchTabScreen() {
   );
 }
 
+const contentPadding = 12
+
 const styles = StyleSheet.create({
   headerImage: {
     color: '#808080',
@@ -101,5 +107,14 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  searchHeaderContainer: {
+    paddingHorizontal: 24 - contentPadding,
+  },
+  contentContainer: {
+    paddingHorizontal: contentPadding,
+  },
+  recipeCardsContainer: {
+    rowGap: 12, 
   },
 });

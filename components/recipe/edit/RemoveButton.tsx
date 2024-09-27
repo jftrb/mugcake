@@ -12,7 +12,6 @@ const styles = StyleSheet.create({
   deleteButton: {
     padding: 4,
     margin: -2,
-    marginLeft: 4,
   },
   xButton: {
     color: 'red',

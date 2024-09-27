@@ -1,5 +1,4 @@
 import { recipesTable } from "@/assets/placeholders/recipe";
-import Recipe from "@/components/recipe/Recipe";
 import { ThemedView } from "@/components/ThemedView";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
@@ -18,7 +17,7 @@ function addIdProp<T>(array: T[]) {
   return output;
 }
 
-export default function RecipeTabScreen() {
+export default function RecipeEditScreen() {
   const navigation = useNavigation()
   useEffect(() => {
     navigation.setOptions({ headerShown: false });

@@ -1,4 +1,4 @@
-import CookingSteps, { StepProps } from "@/components/recipe/CookingSteps";
+import CookingSteps, { CookingStepProps } from "@/components/recipe/CookingSteps";
 import Ingredients, { IngredientProps } from "@/components/recipe/Ingredients";
 import PrepCard from "@/components/recipe/PrepCard";
 import { ThemedText } from "@/components/ThemedText";
@@ -6,78 +6,91 @@ import { ThemedView } from "@/components/ThemedView";
 import { Image, StyleSheet } from "react-native";
 import { ScrollView } from "react-native";
 import Notes, { NoteProps } from "./Notes";
+import ImageButton from "../ImageButton";
+import { Link } from "expo-router";
+import { useForm } from "react-hook-form";
 
 export type RecipeProps = {
-  recipeProps: {
-    title: string,
-    url: string,
-    tags: string[],
-    imageSource: string,
-    prepInfo: {prepTime: string, cookTime: string, totalTime: string, yield: string},
-    ingredients: IngredientProps[],
-    directions: StepProps[],
-    notes: NoteProps[],
-  }
+  title: string,
+  url: string,
+  tags: string[],
+  imageSource: string,
+  prepInfo: {prepTime: string, cookTime: string, totalTime: string, yield: string},
+  ingredients: IngredientProps[],
+  directions: CookingStepProps[],
+  notes: NoteProps[],
 }
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
-export default function Recipe({recipeProps}: RecipeProps) {
+export default function Recipe({recipeProps}: {recipeProps: RecipeProps}) {
+  const { control, watch, handleSubmit } = useForm<RecipeProps>({
+    defaultValues: recipeProps
+  });
+  
   return (
-    <ScrollView>
-      <ThemedView style={recipeStyles.titleContainer}>
-        <ThemedText type="title" style={recipeStyles.title}>{recipeProps.title}</ThemedText>
+    <>
+      {/* Button Ribbon */}
+      <ThemedView style={{height: 48, backgroundColor: 'white', flexDirection: 'row-reverse'}}>
+        <Link href={`./edit`} asChild>
+          <ImageButton onPress={() => {}}/>
+        </Link>
       </ThemedView>
-      <Image 
-        style={recipeStyles.image}
-        source={{uri: recipeProps.imageSource}}
-      />
+      <ScrollView>
+        <ThemedView style={recipeStyles.titleContainer}>
+          <ThemedText type="title" style={recipeStyles.title}>{recipeProps.title}</ThemedText>
+        </ThemedView>
+        <Image 
+          style={recipeStyles.image}
+          source={{uri: recipeProps.imageSource}}
+        />
 
-      {/* Recipe Prep Cards */}
-      <ThemedView style={recipeStyles.prepCardsContainer}>
-        <PrepCard
-          style={recipeStyles.prepCard} 
-          label="Prep Time"
-          value={recipeProps.prepInfo.prepTime}
-        />
-        <PrepCard
-          style={recipeStyles.prepCard} 
-          label="Cook Time"
-          value={recipeProps.prepInfo.cookTime}
-        />
-        <PrepCard
-          style={recipeStyles.prepCard} 
-          label="Total Time"
-          value={recipeProps.prepInfo.totalTime}
-        />
-        <PrepCard
-          style={recipeStyles.prepCard} 
-          label="Portions" 
-          value={recipeProps.prepInfo.yield}
-        />
-      </ThemedView>
-      <ThemedView style={recipeStyles.recipeContainer}>
+        {/* Recipe Prep Cards */}
+        <ThemedView style={recipeStyles.prepCardsContainer}>
+          <PrepCard
+            style={recipeStyles.prepCard} 
+            label="Prep Time"
+            value={recipeProps.prepInfo.prepTime}
+          />
+          <PrepCard
+            style={recipeStyles.prepCard} 
+            label="Cook Time"
+            value={recipeProps.prepInfo.cookTime}
+          />
+          <PrepCard
+            style={recipeStyles.prepCard} 
+            label="Total Time"
+            value={recipeProps.prepInfo.totalTime}
+          />
+          <PrepCard
+            style={recipeStyles.prepCard} 
+            label="Portions" 
+            value={recipeProps.prepInfo.yield}
+          />
+        </ThemedView>
+        <ThemedView style={recipeStyles.recipeContainer}>
 
-        {/* Ingredients */}
-        <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Ingredients :</ThemedText>
-        <ThemedView style={recipeStyles.ingredients}>
-          <Ingredients>{recipeProps.ingredients}</Ingredients>
+          {/* Ingredients */}
+          <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Ingredients :</ThemedText>
+          <ThemedView style={recipeStyles.ingredients}>
+            <Ingredients>{recipeProps.ingredients}</Ingredients>
+          </ThemedView>
+
+          {/* Cooking Steps */}
+          <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Cooking Steps :</ThemedText>
+          <CookingSteps 
+            style={recipeStyles.ingredients} 
+            data={recipeProps.directions}
+          />
         </ThemedView>
 
-        {/* Cooking Steps */}
-        <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Cooking Steps :</ThemedText>
-        <CookingSteps 
-          style={recipeStyles.ingredients} 
-          data={recipeProps.directions}
-        />
-      </ThemedView>
-
-      {/* Notes */}
-      <ThemedView style={recipeStyles.notesContainer}>
-        <Notes>
-          {recipeProps.notes}
-        </Notes>
-      </ThemedView>
-    </ScrollView>
+        {/* Notes */}
+        <ThemedView style={recipeStyles.notesContainer}>
+          <Notes>
+            {recipeProps.notes}
+          </Notes>
+        </ThemedView>
+      </ScrollView>
+    </>
   )
 }
 
@@ -116,6 +129,9 @@ export const recipeStyles = StyleSheet.create({
   },
   ingredients: {
     marginLeft: interiorPadding,
+    marginRight: interiorPadding,
+  },
+  editableListsContainers: {
     marginRight: interiorPadding,
   },
   directionsTitle: {

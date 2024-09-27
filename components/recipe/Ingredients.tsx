@@ -5,9 +5,10 @@ import { ThemedList } from "../ThemedList";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import RemoveButton from "./edit/RemoveButton";
 import { ThemedTextInput } from "../ThemedTextInput";
-import EditableList, { Editable } from "./edit/EditableList";
+import EditableList, { Deletable, Editable } from "./edit/EditableList";
 import { useState } from "react";
 import { randomUUID } from "expo-crypto";
+import { RecipeProps } from "./Recipe";
 
 export interface IngredientProps {
   id: string
@@ -16,7 +17,7 @@ export interface IngredientProps {
   ingredient: string,
 }
 
-function Ingredient({quantity, unit, ingredient, id, onDeletePress, editable} : IngredientProps & Editable) {
+function Ingredient({quantity, unit, ingredient, id, onDeletePress, editable} : IngredientProps & Editable<RecipeProps> & Deletable) {
   return (
     <ThemedView style={styles.ingredientContainer}>
       {editable ? 
@@ -59,7 +60,7 @@ export default function Ingredients({children, editable}: {children: IngredientP
         scrollEnabled={false}
         data={ingredients}
         renderItem={({item}) => createChildComponent(item)}
-        onPress={() => {
+        onPressAdd={() => {
           console.log('adding ingredient')
           ingredients.push({quantity: 1, unit: '', ingredient: '', id: randomUUID()});
           setIngredients(ingredients.concat([]));

@@ -30,7 +30,7 @@ export default function RecipeCard({title, totalTime, tags, imageSource}: CardPr
           style={styles.image}
           source={{uri: imageSource}}/>
         <ThemedView style={styles.descriptionContainer}>
-          <ThemedText type='subtitle' style={{minHeight: 48}}>{title}</ThemedText>
+          <ThemedText type='defaultSemiBold' style={{height: 48}}>{title}</ThemedText>
           <ThemedView>
             <ThemedList 
               style={styles.tagContainer}
@@ -55,7 +55,7 @@ export default function RecipeCard({title, totalTime, tags, imageSource}: CardPr
   )
 }
 
-const imgSize = 110
+const imgSize = 80
 
 const styles = StyleSheet.create({
   horizontal : {

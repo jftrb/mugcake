@@ -10,11 +10,15 @@ import Notes from "../Notes";
 import { Controller, useForm } from "react-hook-form";
 import ImageButton from "@/components/ImageButton";
 import PrepCard from "../PrepCard";
+import EditableNotes from "./EditableNotes";
+import EditableCookingSteps from "./EditableCookingSteps";
 
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
-export default function EditableRecipe({recipeProps}: RecipeProps) {
-  const { control, handleSubmit, formState: { errors } } = useForm();
+export default function EditableRecipe({recipeProps}: {recipeProps: RecipeProps}) {
+  const { control, watch, handleSubmit, formState: { errors } } = useForm<RecipeProps>({
+    defaultValues: recipeProps
+  });
 
   return (
     <>
@@ -33,43 +37,43 @@ export default function EditableRecipe({recipeProps}: RecipeProps) {
 
         {/* Recipe Prep Cards */}
         <ThemedView style={recipeStyles.prepCardsContainer}>
-          <EditablePrepCard name='recipe.prepInfo.prepTime' label="Prep Time" defaultValue={recipeProps.prepInfo.prepTime}/>
-          <EditablePrepCard name='recipe.prepInfo.cookTime' label="Cook Time" defaultValue={recipeProps.prepInfo.cookTime}/>
-          <EditablePrepCard name='recipe.prepInfo.totalTime' label="Total Time" defaultValue={recipeProps.prepInfo.totalTime}/>
-          <EditablePrepCard name='recipe.prepInfo.portions' label="Portions" defaultValue={recipeProps.prepInfo.yield}/>
+          <EditablePrepCard name='prepTime' label="Prep Time"/>
+          <EditablePrepCard name='cookTime' label="Cook Time"/>
+          <EditablePrepCard name='totalTime' label="Total Time"/>
+          <EditablePrepCard name='yield' label="Portions"/>
         </ThemedView>
 
         <ThemedView style={recipeStyles.recipeContainer}>
 
           {/* Ingredients */}
           <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Ingredients :</ThemedText>
-          <ThemedView style={recipeStyles.ingredients}>
+          <ThemedView style={recipeStyles.editableListsContainers}>
             <Ingredients editable>{recipeProps.ingredients}</Ingredients>
           </ThemedView>
 
           {/* Cooking Steps */}
           <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Cooking Steps :</ThemedText>
-          <CookingSteps 
-            editable 
-            style={recipeStyles.ingredients} 
-            data={recipeProps.directions}
-          />
+          <ThemedView style={recipeStyles.editableListsContainers}>
+            <EditableCookingSteps control={control}/>
+          </ThemedView>
         </ThemedView>
 
         {/* Notes */}
-        <ThemedView style={recipeStyles.notesContainer}>
-          <Notes editable>
-            {recipeProps.notes}
-          </Notes>
+        <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Notes :</ThemedText>
+        <ThemedView style={recipeStyles.editableListsContainers}>
+          <EditableNotes control={control}/>
         </ThemedView>
       </ScrollView>
     </>
   )
 
-  function EditablePrepCard({name, label, defaultValue}: {name: string, label: string, defaultValue?: string}) {
+  function EditablePrepCard({
+    name, 
+    label, 
+  }: {name: "prepTime" | "cookTime" | "totalTime" | "yield", label: string}) {
     return (
       <Controller
-        name={name}
+        name={`prepInfo.${name}`}
         control={control}
         render={({ field: { onChange, onBlur, value }  }) => (
           <PrepCard editable
@@ -77,7 +81,6 @@ export default function EditableRecipe({recipeProps}: RecipeProps) {
             style={recipeStyles.prepCard}
             label={label}
             inputProps={{
-              defaultValue: defaultValue,           
               onBlur:onBlur,
               onChangeText:onChange
             }} />

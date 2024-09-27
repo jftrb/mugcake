@@ -1,22 +1,31 @@
 import { ThemedFlatListProps, ThemedList } from "@/components/ThemedList";
 import { ThemedText } from "@/components/ThemedText";
+import { Control, FieldValues, UseFormWatch } from "react-hook-form";
 import { GestureResponderEvent, Pressable } from "react-native";
 
-export interface Editable {
+export interface Editable<TFields extends FieldValues> {
   editable?: boolean
+  control?: Control<TFields>
+}
+
+export interface EditableArray<TFields extends FieldValues> extends Editable<TFields> {
+  watch: UseFormWatch<TFields>
+}
+
+export interface Deletable {
   onDeletePress: ((id: string) => void);
 }
 
 type EditableListProps<ItemT> = ThemedFlatListProps<ItemT> & {
-  onPress: null | ((event: GestureResponderEvent) => void) | undefined
+  onPressAdd: null | ((event: GestureResponderEvent) => void) | undefined
 }
 
-export default function EditableList<ItemT>({onPress, data, ...otherProps} : EditableListProps<ItemT>){
+export default function EditableList<ItemT>({onPressAdd, data, ...otherProps} : EditableListProps<ItemT>){
   return (
     <>
       <ThemedList data={data} {...otherProps}
       />
-      <Pressable onPress={onPress} style={{marginLeft: 6}}>
+      <Pressable onPress={onPressAdd} style={{marginLeft: 6}}>
         <ThemedText>+ Add</ThemedText>
       </Pressable>
     </>

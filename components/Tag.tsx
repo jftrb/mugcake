@@ -23,7 +23,7 @@ export default function Tag({style, item, editable, onPress, ...rest} : TagProps
         <ThemedView style={[styles.tagContainer, dynamicStyle.border, style]} {...rest}>
             <ThemedText>{item}</ThemedText>
             {editable ? 
-              <RemoveButton onPress={onPress}/> : 
+              <RemoveButton style={{marginLeft: 4}} onPress={onPress}/> : 
               null
             }
         </ThemedView>
