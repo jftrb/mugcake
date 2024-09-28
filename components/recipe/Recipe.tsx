@@ -6,7 +6,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { Image, StyleSheet } from "react-native";
 import { ScrollView } from "react-native";
 import Notes, { NoteProps } from "./Notes";
-import ImageButton from "../ImageButton";
+import {ImageButton} from "../ImageButton";
 import { Link } from "expo-router";
 import { TagProps } from "./Tags";
 

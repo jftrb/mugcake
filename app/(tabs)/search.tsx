@@ -6,7 +6,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import RecipeCard from '@/components/search/RecipeCard';
 import { ThemedList } from '@/components/ThemedList';
-import ImageButton from '@/components/ImageButton';
+import {ImageButton} from '@/components/ImageButton';
 import { recipesTable } from '@/assets/placeholders/recipe';
 import { Link } from 'expo-router';
 import { useState } from 'react';
@@ -21,7 +21,7 @@ const recipes = recipesTable.map((recipe) => { return {
 
 function searchRecipes(text: string) {
   const matches = recipesTable.filter(
-    (recipe) => recipe.title.toLowerCase().includes(text.toLowerCase()) || recipe.tags.includes(text)
+    (recipe) => recipe.title.toLowerCase().includes(text.toLowerCase()) || recipe.tags.map(t => t.value).includes(text)
   );
   const out =  matches.map((recipe) => { return {
     id: recipe.id,
@@ -67,20 +67,12 @@ export default function SearchTabScreen() {
         data={searchResults}
         scrollEnabled={false}
         renderItem={({item}) => 
-          /*
-          TODO :
-          Fix the link so that it only applies to the image/title/prep time regions to avoid overlap 
-          with tags links
-          */
-          <Link href={`/recipe/${item.id}`} asChild>
-            <Pressable>
-              <RecipeCard 
-                title={item.title} 
-                totalTime={item.totalTime} 
-                tags={item.tags} 
-                imageSource={item.imageSource}/>
-              </Pressable>
-          </Link>
+          <RecipeCard 
+            recipeId={item.id}
+            title={item.title} 
+            totalTime={item.totalTime} 
+            tags={item.tags.map(t => t.value)} 
+            imageSource={item.imageSource}/>
         }>
       </ThemedList>
     </ParallaxScrollView>

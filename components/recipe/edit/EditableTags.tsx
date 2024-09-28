@@ -1,5 +1,5 @@
 import { TagProps } from "../Tags";
-import { tagStyles } from "../Tags";
+import { tagStyles } from "@/components/Tag";
 import { Platform, Pressable, StyleSheet } from "react-native";
 import { RecipeProps } from "../Recipe";
 import { Editable } from "./EditableList";

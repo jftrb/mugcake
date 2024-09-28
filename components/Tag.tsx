@@ -1,7 +1,6 @@
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { GestureResponderEvent, StyleSheet } from "react-native";
 import RemoveButton from "./recipe/edit/RemoveButton";
-import { tagStyles } from "./recipe/Tags";
 import { ThemedText } from "./ThemedText";
 import { ThemedViewProps, ThemedView } from "./ThemedView";
 
@@ -30,4 +29,16 @@ export function Tag({ style, item, editable, onPress, ...rest }: TagProps2) {
   );
 }
 
-
+export const tagStyles = StyleSheet.create({
+  tagContainer: {
+    height: 32,
+    padding: 8,
+    paddingBottom: 4,
+    paddingTop: 2,
+    borderRadius: 16,
+    borderWidth: 1,
+    userSelect: 'none',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+});

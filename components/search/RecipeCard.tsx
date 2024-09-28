@@ -9,13 +9,14 @@ import { TagProps } from "../recipe/Tags";
 import { Tag } from "../Tag";
 
 type CardProps = {
+  recipeId: string,
   title: string,
   totalTime: string,
-  tags: TagProps[],
+  tags: string[],
   imageSource: string,
 }
 
-export default function RecipeCard({title, totalTime, tags, imageSource}: CardProps) {
+export default function RecipeCard({recipeId, title, totalTime, tags, imageSource}: CardProps) {
   const borderColor = useThemeColor({}, 'text')
 
   const dynamicStyle = StyleSheet.create({
@@ -27,11 +28,23 @@ export default function RecipeCard({title, totalTime, tags, imageSource}: CardPr
   return (
     <ThemedView style={[styles.horizontal, dynamicStyle.border, styles.border]}>
       <ThemedView style={[styles.horizontal, , {flex: 1, padding: 4}]}>
-        <Image 
-          style={styles.image}
-          source={{uri: imageSource}}/>
+        
+        {/* Image */}
+        <Link href={`/recipe/${recipeId}`} asChild style={{alignSelf: 'center'}}>
+          <Pressable>
+            <Image 
+              style={styles.image}
+              source={{uri: imageSource}}/>
+          </Pressable>
+        </Link>
+
+        {/* Middle part */}
         <ThemedView style={styles.descriptionContainer}>
-          <ThemedText type='defaultSemiBold' style={{height: 48}}>{title}</ThemedText>
+          <Link href={`/recipe/${recipeId}`} asChild>
+            <Pressable>
+              <ThemedText type='defaultSemiBold' style={{height: 48}}>{title}</ThemedText>
+            </Pressable>
+          </Link>
           <ThemedView>
             <ThemedList 
               style={styles.tagContainer}
@@ -41,7 +54,7 @@ export default function RecipeCard({title, totalTime, tags, imageSource}: CardPr
               renderItem={({item}) => 
                 <Link href="/" asChild> 
                   <Pressable>
-                    <Tag item={item.value}/>
+                    <Tag item={item}/>
                   </Pressable>
                 </Link>
               }
@@ -49,9 +62,17 @@ export default function RecipeCard({title, totalTime, tags, imageSource}: CardPr
           </ThemedView>
         </ThemedView>
       </ThemedView>
-      <ThemedView style={[styles.timeContainer, dynamicStyle.border]}>
-        <PrepCard label="Total Time" value={totalTime}></PrepCard>
-      </ThemedView>
+
+      {/* Prep time info */}
+      <Link href={`/recipe/${recipeId}`} 
+        asChild 
+        style={[{alignSelf: 'stretch'}, styles.timeContainer, dynamicStyle.border]}>
+        <Pressable>
+          <ThemedView>
+            <PrepCard label="Total Time" value={totalTime}></PrepCard>
+          </ThemedView>
+        </Pressable>
+      </Link>
     </ThemedView>
   )
 }

@@ -5,7 +5,7 @@ import { RecipeProps, recipeStyles } from "../Recipe";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import EditableTags from "./EditableTags";
 import { Controller, useForm } from "react-hook-form";
-import ImageButton from "@/components/ImageButton";
+import {ImageButton} from "@/components/ImageButton";
 import PrepCard from "../PrepCard";
 import EditableNotes from "./EditableNotes";
 import EditableCookingSteps from "./EditableCookingSteps";
