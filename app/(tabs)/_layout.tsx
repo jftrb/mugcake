@@ -33,21 +33,21 @@ export default function TabLayout() {
           title: "Search",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+              name={focused ? "search" : "search-outline"}
               color={color}
             />
           ),
         }}
       />
-      {/* <Tabs.Screen
-        name="recipe"
+      <Tabs.Screen
+        name="new"
         options={{
-          title: 'Recipe',
+          title: 'New',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'add' : 'add-outline'} color={color} />
           ),
         }}
-      /> */}
+      />
     </Tabs>
   );
 }

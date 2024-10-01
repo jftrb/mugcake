@@ -53,7 +53,7 @@ export default function SearchTabScreen() {
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
       headerImage={
-        <Ionicons size={310} name="code-slash" style={styles.headerImage} />
+        <Ionicons size={350} name="search" style={styles.headerImage} />
       }
       contentStyle={styles.contentContainer}
     >

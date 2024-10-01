@@ -1,3 +1,4 @@
+import Fontisto from '@expo/vector-icons/Fontisto';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Platform, ScrollView } from "react-native";
