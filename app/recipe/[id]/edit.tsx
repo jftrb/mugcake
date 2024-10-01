@@ -5,7 +5,7 @@ import NotFoundScreen from "../+not-found";
 import { useEffect } from "react";
 import { randomUUID } from "expo-crypto";
 import EditableRecipe from "@/components/recipe/edit/EditableRecipe";
-import { getLocalStorage } from "@/hooks/useLocalStorage";
+import { getLocalStorage } from "@/libraries/localStorage";
 import { RecipeProps } from "@/components/recipe/Recipe";
 
 function addIdProp<T>(array: T[]) {

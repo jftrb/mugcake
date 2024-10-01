@@ -31,7 +31,7 @@ export type RecipeProps = {
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
-  return (
+    return (
     <>
       {/* Button Ribbon */}
       <ThemedView

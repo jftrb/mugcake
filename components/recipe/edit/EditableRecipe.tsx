@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { ScrollView } from "react-native";
+import { Platform, ScrollView } from "react-native";
 import { RecipeProps, recipeStyles } from "../Recipe";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import EditableTags from "./EditableTags";
@@ -10,8 +10,10 @@ import PrepCard from "../PrepCard";
 import EditableNotes from "./EditableNotes";
 import EditableCookingSteps from "./EditableCookingSteps";
 import EditableIngredients from "./EditableIngredients";
-import { getLocalStorage } from "@/hooks/useLocalStorage";
-import { Link, router } from "expo-router";
+import { getLocalStorage } from "@/libraries/localStorage";
+import { router, useNavigation } from "expo-router";
+import { useEffect } from "react";
+import { MobileBackHandler, WebBackHandler } from "@/libraries/backHandler";
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function EditableRecipe({
@@ -22,27 +24,41 @@ export default function EditableRecipe({
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty },
     setFocus,
   } = useForm<RecipeProps>({
     defaultValues: recipeProps,
   });
+  const navigation = useNavigation();
+  
+  let changesSaved = false;
+  const backHandler =
+    Platform.OS === "web"
+      ? new WebBackHandler(navigation, () => isDirty, () => changesSaved)
+      : new MobileBackHandler(() => isDirty, router.back);
 
+  useEffect(() => {
+    const backHandlerUnsub = backHandler.setupBackHandler();
+    return backHandlerUnsub;
+  });
   const storage = getLocalStorage();
 
   return (
     <>
       {/* Button Ribbon */}
-      <ThemedView
-        style={recipeStyles.ribbon}
-      >
+      <ThemedView style={recipeStyles.ribbon}>
         <ImageButton
-          imageStyle={{ width: 48, height:12, backgroundColor: "transparent" }}
-          style={[recipeStyles.editButton, {height: 48}]}
-          source={require('@/assets/images/save-icon.png')}
+          imageStyle={{ width: 48, height: 12, backgroundColor: "transparent" }}
+          style={[recipeStyles.editButton, { height: 48 }]}
+          source={require("@/assets/images/save-icon.png")}
           onPress={handleSubmit((data) => {
-            console.log(`Updating storage value for recipe id : ${recipeProps.id}`);
-            storage.set(data.id, JSON.stringify(data));
+            if (isDirty) {
+              console.log(
+                `Updating storage value for recipe id : ${recipeProps.id}`
+              );
+              storage.set(data.id, JSON.stringify(data));
+              changesSaved = true;
+            }
             router.navigate(`/recipe/${recipeProps.id}`);
           })}
         />

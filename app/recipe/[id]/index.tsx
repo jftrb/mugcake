@@ -6,7 +6,7 @@ import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import NotFoundScreen from "../../+not-found";
 import { useEffect, useSyncExternalStore } from "react";
 import { randomUUID } from "expo-crypto";
-import { subscribe, getLocalStorage } from "@/hooks/useLocalStorage";
+import { subscribe, getLocalStorage } from "@/libraries/localStorage";
 
 function addIdProp<T>(array: T[]) {
   const output: (T & { id: string })[] = [];
@@ -24,7 +24,7 @@ export default function RecipeTabScreen() {
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
-    
+
     // Effect cleanup
     return () => {
       console.log(`Cleaning up recipe ${id} from storage`);

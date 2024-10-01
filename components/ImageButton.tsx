@@ -1,17 +1,17 @@
 import React, { forwardRef, LegacyRef } from 'react'
-import { TouchableOpacity, View, Image, StyleSheet, TouchableOpacityProps, ImageSourcePropType, ImageStyle } from 'react-native'
+import { Pressable, View, Image, StyleSheet, PressableProps, ImageSourcePropType, ImageStyle, ViewStyle } from 'react-native'
 import { ThemedText } from './ThemedText'
 
-type ImageButtonProps = TouchableOpacityProps & {
+type ImageButtonProps = PressableProps & {
   source: ImageSourcePropType
   imageStyle?: ImageStyle
 }
 
-export const ImageButton = forwardRef<LegacyRef<TouchableOpacity>, ImageButtonProps>(function ImageButton(props, ref) {
+export const ImageButton = forwardRef<LegacyRef<View>, ImageButtonProps>(function ImageButton(props, ref) {
   const {onPress, style, source, imageStyle} = props
 
   return (
-    <TouchableOpacity style={[styles.touchable, style]} onPress={onPress}>
+    <Pressable style={[styles.touchable, style as ViewStyle]} onPress={onPress}>
       <View style={styles.view}>
         <ThemedText style={styles.text}>{''}</ThemedText>
       </View>
@@ -19,7 +19,7 @@ export const ImageButton = forwardRef<LegacyRef<TouchableOpacity>, ImageButtonPr
         source={source}
         style={[styles.image, imageStyle]} 
         resizeMode='cover'/>
-    </TouchableOpacity>
+    </Pressable>
   )
 })
 
