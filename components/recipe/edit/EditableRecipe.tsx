@@ -5,24 +5,47 @@ import { RecipeProps, recipeStyles } from "../Recipe";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import EditableTags from "./EditableTags";
 import { Controller, useForm } from "react-hook-form";
-import {ImageButton} from "@/components/ImageButton";
+import { ImageButton } from "@/components/ImageButton";
 import PrepCard from "../PrepCard";
 import EditableNotes from "./EditableNotes";
 import EditableCookingSteps from "./EditableCookingSteps";
 import EditableIngredients from "./EditableIngredients";
-
+import { getLocalStorage } from "@/hooks/useLocalStorage";
+import { Link, router } from "expo-router";
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
-export default function EditableRecipe({recipeProps}: {recipeProps: RecipeProps}) {
-  const { control, handleSubmit, formState: { errors }, setFocus } = useForm<RecipeProps>({
-    defaultValues: recipeProps
+export default function EditableRecipe({
+  recipeProps,
+}: {
+  recipeProps: RecipeProps;
+}) {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setFocus,
+  } = useForm<RecipeProps>({
+    defaultValues: recipeProps,
   });
+
+  const storage = getLocalStorage();
 
   return (
     <>
       {/* Button Ribbon */}
-      <ThemedView style={{height: 48, backgroundColor: 'white', flexDirection: 'row-reverse'}}>
-        <ImageButton onPress={handleSubmit((data) => console.log(data))}/>
+      <ThemedView
+        style={recipeStyles.ribbon}
+      >
+        <ImageButton
+          imageStyle={{ width: 48, height:12, backgroundColor: "transparent" }}
+          style={[recipeStyles.editButton, {height: 48}]}
+          source={require('@/assets/images/save-icon.png')}
+          onPress={handleSubmit((data) => {
+            console.log(`Updating storage value for recipe id : ${recipeProps.id}`);
+            storage.set(data.id, JSON.stringify(data));
+            router.navigate(`/recipe/${recipeProps.id}`);
+          })}
+        />
       </ThemedView>
 
       <ScrollView>
@@ -31,70 +54,83 @@ export default function EditableRecipe({recipeProps}: {recipeProps: RecipeProps}
             name="title"
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
-             <ThemedTextInput multiline 
-              type='title' 
-              value={value} 
-              onChangeText={onChange}
-              onBlur={onBlur}
-              style={{margin:4, textAlign: 'center'}}/>
+              <ThemedTextInput
+                multiline
+                type="title"
+                value={value}
+                onChangeText={onChange}
+                onBlur={onBlur}
+                style={{ margin: 4, textAlign: "center" }}
+              />
             )}
           />
         </ThemedView>
-        <ThemedView style={{flexDirection: 'row'}}>
-          <EditableTags control={control} setFocus={setFocus}/>
+        <ThemedView style={{ flexDirection: "row" }}>
+          <EditableTags control={control} setFocus={setFocus} />
         </ThemedView>
 
         {/* Recipe Prep Cards */}
         <ThemedView style={recipeStyles.prepCardsContainer}>
-          <EditablePrepCard name='prepTime' label="Prep Time"/>
-          <EditablePrepCard name='cookTime' label="Cook Time"/>
-          <EditablePrepCard name='totalTime' label="Total Time"/>
-          <EditablePrepCard name='yield' label="Portions"/>
+          <EditablePrepCard name="prepTime" label="Prep Time" />
+          <EditablePrepCard name="cookTime" label="Cook Time" />
+          <EditablePrepCard name="totalTime" label="Total Time" />
+          <EditablePrepCard name="yield" label="Portions" />
         </ThemedView>
 
         <ThemedView style={recipeStyles.recipeContainer}>
-
           {/* Ingredients */}
-          <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Ingredients :</ThemedText>
+          <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>
+            Ingredients :
+          </ThemedText>
           <ThemedView style={recipeStyles.editableListsContainers}>
-            <EditableIngredients control={control}/>
+            <EditableIngredients control={control} />
           </ThemedView>
 
           {/* Cooking Steps */}
-          <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Cooking Steps :</ThemedText>
+          <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>
+            Cooking Steps :
+          </ThemedText>
           <ThemedView style={recipeStyles.editableListsContainers}>
-            <EditableCookingSteps control={control}/>
+            <EditableCookingSteps control={control} />
           </ThemedView>
         </ThemedView>
 
         {/* Notes */}
-        <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>Notes :</ThemedText>
+        <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>
+          Notes :
+        </ThemedText>
         <ThemedView style={recipeStyles.editableListsContainers}>
-          <EditableNotes control={control}/>
+          <EditableNotes control={control} />
         </ThemedView>
       </ScrollView>
     </>
-  )
+  );
 
   function EditablePrepCard({
-    name, 
-    label, 
-  }: {name: "prepTime" | "cookTime" | "totalTime" | "yield", label: string}) {
+    name,
+    label,
+  }: {
+    name: "prepTime" | "cookTime" | "totalTime" | "yield";
+    label: string;
+  }) {
     return (
       <Controller
         name={`prepInfo.${name}`}
         control={control}
-        render={({ field: { onChange, onBlur, value }  }) => (
-          <PrepCard editable
+        render={({ field: { onChange, onBlur, value } }) => (
+          <PrepCard
+            editable
             value={value}
             style={recipeStyles.prepCard}
             label={label}
             inputProps={{
-              onBlur:onBlur,
-              onChangeText:onChange
-            }} />
-        )} 
-        rules={{required: true}}
-      />);
+              onBlur: onBlur,
+              onChangeText: onChange,
+            }}
+          />
+        )}
+        rules={{ required: true }}
+      />
+    );
   }
 }

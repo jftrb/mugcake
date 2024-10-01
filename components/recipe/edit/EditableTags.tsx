@@ -78,10 +78,9 @@ export default function EditableTags({control, setFocus} : Editable<RecipeProps>
   const previousLength = useRef(fields.length)
   const scrollRef = useRef<ScrollView>(null)
 
-  // Handle qty changes
+  // TODO : Handle qty changes
   useEffect(() => {
     setTimeout(() => {
-    console.log('in effect')
     if (fields.length > previousLength.current) {
       scrollRef.current?.scrollToEnd()
       console.log('setting focus')

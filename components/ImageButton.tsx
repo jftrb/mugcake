@@ -1,18 +1,23 @@
 import React, { forwardRef, LegacyRef } from 'react'
-import { TouchableOpacity, View, Image, StyleSheet, TouchableOpacityProps, Pressable } from 'react-native'
+import { TouchableOpacity, View, Image, StyleSheet, TouchableOpacityProps, ImageSourcePropType, ImageStyle } from 'react-native'
 import { ThemedText } from './ThemedText'
 
-export const ImageButton = forwardRef<LegacyRef<TouchableOpacity>, TouchableOpacityProps>(function ImageButton(props, ref) {
-  const {onPress} = props
+type ImageButtonProps = TouchableOpacityProps & {
+  source: ImageSourcePropType
+  imageStyle?: ImageStyle
+}
+
+export const ImageButton = forwardRef<LegacyRef<TouchableOpacity>, ImageButtonProps>(function ImageButton(props, ref) {
+  const {onPress, style, source, imageStyle} = props
 
   return (
-    <TouchableOpacity style={styles.touchable} onPress={onPress}>
+    <TouchableOpacity style={[styles.touchable, style]} onPress={onPress}>
       <View style={styles.view}>
         <ThemedText style={styles.text}>{''}</ThemedText>
       </View>
       <Image
-        source={require('@/assets/images/search-icon.png')}
-        style={[styles.image]} 
+        source={source}
+        style={[styles.image, imageStyle]} 
         resizeMode='cover'/>
     </TouchableOpacity>
   )
@@ -28,7 +33,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: 32,
     height: 0,
-    borderRadius: 16,
     backgroundColor: 'white'
   },
   touchable: {

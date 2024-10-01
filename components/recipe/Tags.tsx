@@ -7,21 +7,19 @@ export type TagProps = {
   value: string;
 };
 
-export default function Tags({children} : {children: TagProps[]}) {
+export default function Tags({ children }: { children: TagProps[] }) {
   return (
     <>
-      <ThemedList 
-        style={{columnGap: 8}}
+      <ThemedList
+        style={{ columnGap: 8 }}
         showsHorizontalScrollIndicator={false}
         horizontal
         data={children}
-        renderItem={({item}) => 
-          <Tag item={item.value}/>
-        }
-        />
-        <Pressable style={{marginLeft: 16}}>
-        <Tag style={{minWidth: 32}} item='+ New'/>
+        renderItem={({ item }) => <Tag item={item.value} />}
+      />
+      <Pressable style={{ marginLeft: 16 }}>
+        <Tag style={{ minWidth: 32 }} item="+ New" />
       </Pressable>
     </>
-  )
+  );
 }
