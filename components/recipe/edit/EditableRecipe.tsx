@@ -9,11 +9,11 @@ import { ImageButton } from "@/components/ImageButton";
 import PrepCard from "../PrepCard";
 import EditableNotes from "./EditableNotes";
 import EditableCookingSteps from "./EditableCookingSteps";
-import EditableIngredients from "./EditableIngredients";
 import { getLocalStorage } from "@/libraries/localStorage";
 import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { MobileBackHandler, WebBackHandler } from "@/libraries/backHandler";
+import EditableIngredientSections from "./EditableIngredientSection";
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function EditableRecipe({
@@ -99,7 +99,7 @@ export default function EditableRecipe({
             Ingredients :
           </ThemedText>
           <ThemedView style={recipeStyles.editableListsContainers}>
-            <EditableIngredients control={control} />
+            <EditableIngredientSections control={control} />
           </ThemedView>
 
           {/* Cooking Steps */}

@@ -16,8 +16,11 @@ export default function RecipeEditScreen() {
 
   const storage = getLocalStorage()
   const recipeJSON = storage.getString('new') as string
-  const recipe = JSON.parse(recipeJSON) as RecipeProps
+  const recipeParsed = JSON.parse(recipeJSON)
+  console.log(`Recipe as parsed from storage:`)
+  console.log(recipeParsed)
 
+  const recipe = recipeParsed as RecipeProps
   const recipeWithIds = {
     id: 'new',
     url: recipe.url,

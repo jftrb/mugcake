@@ -1,4 +1,4 @@
-import { Button, StyleSheet } from "react-native";
+import { Button, StyleSheet, TextInput } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -6,7 +6,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import { Controller, useForm } from "react-hook-form";
-import { boilDownRecipe } from "@/libraries/recipeExtractor";
+import { RecipeExtractor } from "@/libraries/recipeExtractor";
 import { getLocalStorage } from "@/libraries/localStorage";
 import { router } from "expo-router";
 
@@ -53,8 +53,9 @@ export default function HomeScreen() {
                 autoCapitalize="none"
                 autoComplete="url"
                 autoCorrect={false}
-                style={{ borderWidth: 0.5, flex: 1, paddingHorizontal: 4, backgroundColor: 'white' }}
+                style={{ borderWidth: 0.5, flex: 1, paddingHorizontal: 4, backgroundColor: 'white', color: 'black' }}
                 placeholder="https://www.mugcake.com"
+                placeholderTextColor="#bbbbbb"
                 value={value}
               />
             )}
@@ -62,10 +63,13 @@ export default function HomeScreen() {
           <Button
             title="Import"
             onPress={handleSubmit(async (data) => {
-              console.log(`Fetching recipe from url ${data}`);
-              const recipe = await boilDownRecipe(data.toString())
+              console.log(`Fetching recipe from url ${data.href}`);
+              const extractor = new RecipeExtractor(process.env.EXPO_PUBLIC_GEMINI_API_KEY)
+              const recipe = await extractor.boilDownRecipe(data.href.toString())
+
               console.log(recipe)
               storage.set('new', JSON.stringify(recipe))
+              
               console.log('Redirecting to New Recipe Edit screen.')
               router.navigate('/recipe/new')
             })}

@@ -12,6 +12,7 @@ import { editStyles } from "./EditStyles";
 
 const EditableIngredient = ({ 
   control, 
+  sectionIndex,
   index, 
   field, 
   remove 
@@ -19,13 +20,14 @@ const EditableIngredient = ({
   remove: UseFieldArrayRemove
   control?: Control<RecipeProps>
   index: number
+  sectionIndex: number
   field: IngredientProps
 }) => {
   function controlField(name: "quantity" | "unit" | "ingredient", style: StyleProp<TextStyle>){
     return (
       <Controller
         control={control}
-        name={`ingredients.${index}.${name}`}
+        name={`ingredients.${sectionIndex}.ingredients.${index}.${name}`}
         render={({ field: { onChange, onBlur, value } }) =>
           <ThemedTextInput style={style} 
             value={`${value}`}
@@ -52,15 +54,15 @@ const EditableIngredient = ({
     </ThemedView>
 )}
 
-export default function EditableIngredients({ control }: Editable<RecipeProps>){
+export default function EditableIngredients({ control, sectionIndex }: Editable<RecipeProps> & {sectionIndex: number}){
   const { fields, append, remove } = useFieldArray({
-    name: 'ingredients',
+    name: `ingredients.${sectionIndex}.ingredients`,
     control
   })  
   return (
     <ThemedView style={editStyles.contentList}>
       {fields.map((field, index) => 
-        <EditableIngredient key={field.id} {...{ index, field, remove, control }}/>
+        <EditableIngredient key={field.id} {...{ sectionIndex, index, field, remove, control }}/>
       )}
       <Pressable 
         onPress={() => {
@@ -68,7 +70,7 @@ export default function EditableIngredients({ control }: Editable<RecipeProps>){
           append({quantity: 1, unit: "", ingredient: "", id: randomUUID()})
         }}
         style={editStyles.deleteButtonPressArea}>
-        <ThemedText>+ Add</ThemedText>
+        <ThemedText>+ Add Ingredient</ThemedText>
       </Pressable>
     </ThemedView>
   )
