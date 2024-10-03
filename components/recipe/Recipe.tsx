@@ -1,7 +1,6 @@
 import CookingSteps, {
   CookingStepProps,
 } from "@/components/recipe/CookingSteps";
-import Ingredients, { IngredientProps } from "@/components/recipe/Ingredients";
 import PrepCard from "@/components/recipe/PrepCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -11,6 +10,7 @@ import Notes, { NoteProps } from "./Notes";
 import { ImageButton } from "../ImageButton";
 import { Link } from "expo-router";
 import { TagProps } from "./Tags";
+import IngredientSections, { IngredientSectionProps } from "./IngredientSection";
 
 export type RecipeProps = {
   id: string;
@@ -24,7 +24,7 @@ export type RecipeProps = {
     totalTime: string;
     yield: string;
   };
-  ingredients: IngredientProps[];
+  ingredients: IngredientSectionProps[];
   directions: CookingStepProps[];
   notes: NoteProps[];
 };
@@ -86,7 +86,7 @@ export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
             Ingredients :
           </ThemedText>
           <ThemedView style={recipeStyles.ingredients}>
-            <Ingredients>{recipeProps.ingredients}</Ingredients>
+            <IngredientSections data={recipeProps.ingredients}></IngredientSections>
           </ThemedView>
 
           {/* Cooking Steps */}
@@ -153,7 +153,7 @@ export const recipeStyles = StyleSheet.create({
     marginBottom: 8,
   },
   ingredients: {
-    marginLeft: interiorPadding,
+    paddingLeft: interiorPadding,
     marginRight: interiorPadding,
   },
   editableListsContainers: {

@@ -44,8 +44,8 @@ export default function RecipeEditScreen() {
     };
 
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.container}>
+      <SafeAreaView style={editStyles.safeArea}>
+        <ThemedView style={editStyles.container}>
           <EditableRecipe recipeProps={recipeWithIds} />
         </ThemedView>
       </SafeAreaView>
@@ -53,7 +53,7 @@ export default function RecipeEditScreen() {
   }
 }
 
-const styles = StyleSheet.create({
+export const editStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 12,

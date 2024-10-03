@@ -36,10 +36,11 @@ export default function Ingredients({children}: {children: IngredientProps[]}){
 export const ingredientStyles = StyleSheet.create({
   ingredientContainer: {
     flexDirection: 'row',
-    alignContent: "center"
+    alignContent: "center",
+    marginTop: 6,
   },
   ingredientList: {
-    rowGap: 6
+    rowGap: 6,
   },
   textContainer: {
     marginLeft: 8, 

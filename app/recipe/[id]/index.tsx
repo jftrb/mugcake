@@ -8,7 +8,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { randomUUID } from "expo-crypto";
 import { subscribe, getLocalStorage } from "@/libraries/localStorage";
 
-function addIdProp<T>(array: T[]) {
+export function addIdProp<T>(array: T[]) {
   const output: (T & { id: string })[] = [];
   array.forEach((element) => {
     const newElement = { ...element, id: randomUUID() };
@@ -28,7 +28,7 @@ export default function RecipeTabScreen() {
     // Effect cleanup
     return () => {
       console.log(`Cleaning up recipe ${id} from storage`);
-      getLocalStorage().delete(id)
+      getLocalStorage().delete(id);
     };
   }, [navigation, id]);
 
@@ -77,8 +77,11 @@ function initStorage(recipe: any) {
     prepInfo: recipe.prepInfo,
     title: recipe.title,
 
+    ingredients: [{
+      header: "Head",
+      ingredients: addIdProp(recipe.ingredients),
+    }],
     tags: addIdProp(recipe.tags),
-    ingredients: addIdProp(recipe.ingredients),
     directions: addIdProp(recipe.directions),
     notes: addIdProp(recipe.notes),
   };

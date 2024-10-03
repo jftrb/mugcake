@@ -1,4 +1,3 @@
-import Fontisto from '@expo/vector-icons/Fontisto';
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Platform, ScrollView } from "react-native";
@@ -25,7 +24,7 @@ export default function EditableRecipe({
   const {
     control,
     handleSubmit,
-    formState: { errors, isDirty },
+    formState: { isDirty },
     setFocus,
   } = useForm<RecipeProps>({
     defaultValues: recipeProps,

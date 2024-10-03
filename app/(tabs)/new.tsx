@@ -6,6 +6,9 @@ import { ThemedView } from "@/components/ThemedView";
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import { Controller, useForm } from "react-hook-form";
+import { boilDownRecipe } from "@/libraries/recipeExtractor";
+import { getLocalStorage } from "@/libraries/localStorage";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   const {
@@ -15,6 +18,7 @@ export default function HomeScreen() {
   } = useForm<URL>({
     defaultValues: { href: "" },
   });
+  const storage = getLocalStorage();
 
   return (
     <ParallaxScrollView
@@ -49,7 +53,7 @@ export default function HomeScreen() {
                 autoCapitalize="none"
                 autoComplete="url"
                 autoCorrect={false}
-                style={{ borderWidth: 0.5, flex: 1, paddingHorizontal: 4 }}
+                style={{ borderWidth: 0.5, flex: 1, paddingHorizontal: 4, backgroundColor: 'white' }}
                 placeholder="https://www.mugcake.com"
                 value={value}
               />
@@ -57,8 +61,13 @@ export default function HomeScreen() {
           />
           <Button
             title="Import"
-            onPress={handleSubmit((data) => {
-              console.log(data);
+            onPress={handleSubmit(async (data) => {
+              console.log(`Fetching recipe from url ${data}`);
+              const recipe = await boilDownRecipe(data.toString())
+              console.log(recipe)
+              storage.set('new', JSON.stringify(recipe))
+              console.log('Redirecting to New Recipe Edit screen.')
+              router.navigate('/recipe/new')
             })}
           />
         </ThemedView>

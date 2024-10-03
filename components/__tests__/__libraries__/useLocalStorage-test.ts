@@ -1,4 +1,4 @@
-import { getLocalStorage, subscribe } from "@/hooks/useLocalStorage";
+import { getLocalStorage, subscribe } from "@/libraries/localStorage";
 
 describe("Testing subscribing to local storage events", () => {
   let numberOfCallbacks = 0;
