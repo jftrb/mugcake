@@ -97,9 +97,10 @@ export default function EditableTags({control, setFocus} : Editable<RecipeProps>
         showsHorizontalScrollIndicator={false} 
         contentContainerStyle={{gap: 8}}
       >
-        {fields.map((field, index) => 
+        {fields.length > 0 ? fields.map((field, index) => 
           <EditableTag key={field.id} {...{ index, field, remove, control }}/>
-        )}
+        ) :
+        <Tag item="Added Tags Appear here!"></Tag>}
       </ScrollView>
       <Pressable style={{marginLeft: 16}} 
         onPress={() => {

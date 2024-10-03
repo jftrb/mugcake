@@ -66,14 +66,18 @@ export function addTimes(time1: Duration, time2: Duration) {
 
 export function parseIngredientSection(section: IngredientSection) {
   return {
-    header: section.header,
+    header: isHeaderInvalid(section.header) ? "" : section.header,
     ingredients: section.ingredients.map((i) => {
       return {
         quantity: i.quantity,
-        unit: i.unit,
+        unit: i.unit === null ? '' : i.unit,
         ingredient: i.name,
         other: i.other,
       };
     }),
   };
+}
+
+function isHeaderInvalid(header: string | null) {
+  return header === "Ingredients" || header === "Ingrédients" || header === null
 }
