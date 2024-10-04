@@ -10,7 +10,9 @@ import Notes, { NoteProps } from "./Notes";
 import { ImageButton } from "../ImageButton";
 import { Link } from "expo-router";
 import { TagProps } from "./Tags";
-import IngredientSections, { IngredientSectionProps } from "./IngredientSection";
+import IngredientSections, {
+  IngredientSectionProps,
+} from "./IngredientSection";
 
 export type RecipeProps = {
   id: string;
@@ -31,21 +33,9 @@ export type RecipeProps = {
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
-    return (
+  return (
     <>
-      {/* Button Ribbon */}
-      <ThemedView
-        style={recipeStyles.ribbon}
-      >
-        <Link href={`./edit`} asChild>
-          <ImageButton
-            onPress={() => {}}
-            source={require("@/assets/images/edit-icon.png")}
-            imageStyle={{ width: 48, backgroundColor: "transparent" }}
-            style={recipeStyles.editButton}
-          />
-        </Link>
-      </ThemedView>
+
       <ScrollView>
         <ThemedView style={recipeStyles.titleContainer}>
           <ThemedText type="title" style={recipeStyles.title}>
@@ -86,7 +76,9 @@ export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
             Ingredients :
           </ThemedText>
           <ThemedView style={recipeStyles.ingredients}>
-            <IngredientSections data={recipeProps.ingredients}></IngredientSections>
+            <IngredientSections
+              data={recipeProps.ingredients}
+            ></IngredientSections>
           </ThemedView>
 
           {/* Cooking Steps */}

@@ -1,12 +1,11 @@
 import { recipesTable } from "@/assets/placeholders/recipe";
-import Recipe, { RecipeProps } from "@/components/recipe/Recipe";
-import { ThemedView } from "@/components/ThemedView";
+import { RecipeProps } from "@/components/recipe/Recipe";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { Platform, SafeAreaView, StatusBar, StyleSheet } from "react-native";
 import NotFoundScreen from "../../+not-found";
 import { useEffect, useSyncExternalStore } from "react";
 import { randomUUID } from "expo-crypto";
 import { subscribe, getLocalStorage } from "@/libraries/localStorage";
+import RecipeScreen from "@/components/recipe/RecipeScreen";
 
 export function addIdProp<T>(array: T[]) {
   const output: (T & { id: string })[] = [];
@@ -48,26 +47,10 @@ export default function RecipeTabScreen() {
   } else {
     const parsedRecipe: RecipeProps = JSON.parse(storedRecipe);
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.container}>
-          <Recipe recipeProps={parsedRecipe} />
-        </ThemedView>
-      </SafeAreaView>
+      <RecipeScreen recipe={parsedRecipe}/>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 12,
-    paddingTop: 0,
-  },
-  safeArea: {
-    flex: 1,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-});
 
 function initStorage(recipe: any) {
   const recipeWithIds = {
@@ -77,10 +60,12 @@ function initStorage(recipe: any) {
     prepInfo: recipe.prepInfo,
     title: recipe.title,
 
-    ingredients: [{
-      header: "Head",
-      ingredients: addIdProp(recipe.ingredients),
-    }],
+    ingredients: [
+      {
+        header: "Head",
+        ingredients: addIdProp(recipe.ingredients),
+      },
+    ],
     tags: addIdProp(recipe.tags),
     directions: addIdProp(recipe.directions),
     notes: addIdProp(recipe.notes),
