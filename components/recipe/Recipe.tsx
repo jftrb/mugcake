@@ -4,11 +4,9 @@ import CookingSteps, {
 import PrepCard from "@/components/recipe/PrepCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import { ScrollView } from "react-native";
 import Notes, { NoteProps } from "./Notes";
-import { ImageButton } from "../ImageButton";
-import { Link } from "expo-router";
 import { TagProps } from "./Tags";
 import IngredientSections, {
   IngredientSectionProps,
@@ -34,51 +32,53 @@ export type RecipeProps = {
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
 export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
   return (
-    <>
-
-      <ScrollView>
-        <ThemedView style={recipeStyles.titleContainer}>
-          <ThemedText type="title" style={recipeStyles.title}>
-            {recipeProps.title}
-          </ThemedText>
-        </ThemedView>
-        <Image
-          style={recipeStyles.image}
-          source={{ uri: recipeProps.imageSource }}
+    <ScrollView
+      contentContainerStyle={{
+        maxWidth: 1200,
+        alignSelf: "center",
+        marginTop: 4,
+      }}
+    >
+      <ThemedView style={recipeStyles.titleContainer}>
+        <ThemedText type="title" style={recipeStyles.title}>
+          {recipeProps.title}
+        </ThemedText>
+      </ThemedView>
+      <Image
+        style={[recipeStyles.image]}
+        source={{ uri: recipeProps.imageSource }}
+      />
+      {/* Recipe Prep Cards */}
+      <ThemedView style={recipeStyles.prepCardsContainer}>
+        <PrepCard
+          style={recipeStyles.prepCard}
+          label="Prep Time"
+          value={recipeProps.prepInfo.prepTime}
         />
-
-        {/* Recipe Prep Cards */}
-        <ThemedView style={recipeStyles.prepCardsContainer}>
-          <PrepCard
-            style={recipeStyles.prepCard}
-            label="Prep Time"
-            value={recipeProps.prepInfo.prepTime}
-          />
-          <PrepCard
-            style={recipeStyles.prepCard}
-            label="Cook Time"
-            value={recipeProps.prepInfo.cookTime}
-          />
-          <PrepCard
-            style={recipeStyles.prepCard}
-            label="Total Time"
-            value={recipeProps.prepInfo.totalTime}
-          />
-          <PrepCard
-            style={recipeStyles.prepCard}
-            label="Portions"
-            value={recipeProps.prepInfo.yield}
-          />
-        </ThemedView>
+        <PrepCard
+          style={recipeStyles.prepCard}
+          label="Cook Time"
+          value={recipeProps.prepInfo.cookTime}
+        />
+        <PrepCard
+          style={recipeStyles.prepCard}
+          label="Total Time"
+          value={recipeProps.prepInfo.totalTime}
+        />
+        <PrepCard
+          style={recipeStyles.prepCard}
+          label="Portions"
+          value={recipeProps.prepInfo.yield}
+        />
+      </ThemedView>
+      <ThemedView>
         <ThemedView style={recipeStyles.recipeContainer}>
           {/* Ingredients */}
           <ThemedText type="subtitle" style={recipeStyles.directionsTitle}>
             Ingredients :
           </ThemedText>
           <ThemedView style={recipeStyles.ingredients}>
-            <IngredientSections
-              data={recipeProps.ingredients}
-            ></IngredientSections>
+            <IngredientSections data={recipeProps.ingredients} />
           </ThemedView>
 
           {/* Cooking Steps */}
@@ -89,14 +89,12 @@ export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
             style={recipeStyles.ingredients}
             data={recipeProps.directions}
           />
-        </ThemedView>
 
-        {/* Notes */}
-        <ThemedView style={recipeStyles.notesContainer}>
-          <Notes>{recipeProps.notes}</Notes>
+          {/* Notes */}
+          <Notes style={recipeStyles.notesContainer} data={recipeProps.notes} />
         </ThemedView>
-      </ScrollView>
-    </>
+      </ThemedView>
+    </ScrollView>
   );
 }
 
@@ -124,6 +122,9 @@ export const recipeStyles = StyleSheet.create({
     alignSelf: "center",
     aspectRatio: 1,
     width: "50%",
+    elevation: 40,
+    shadowColor: "#999999",
+    maxWidth: 400,
   },
   titleContainer: {
     gap: 8,
@@ -142,7 +143,6 @@ export const recipeStyles = StyleSheet.create({
   prepCard: {},
   recipeContainer: {
     gap: 8,
-    marginBottom: 8,
   },
   ingredients: {
     paddingLeft: interiorPadding,
@@ -155,7 +155,6 @@ export const recipeStyles = StyleSheet.create({
     paddingTop: 4,
   },
   notesContainer: {
-    gap: 8,
     marginLeft: interiorPadding / 2,
   },
 });

@@ -1,5 +1,5 @@
 import { ThemedView } from "@/components/ThemedView";
-import { Link, router, useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { Platform, Pressable, SafeAreaView } from "react-native";
 import { useEffect } from "react";
 import EditableRecipe from "@/components/recipe/edit/EditableRecipe";

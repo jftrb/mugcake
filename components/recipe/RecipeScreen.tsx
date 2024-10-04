@@ -46,6 +46,8 @@ export const recipeScreenStyles = StyleSheet.create({
     borderWidth: 0.5,
     backgroundColor: "#dddddd",
     borderRadius: 4,
+    width: 40,
+    alignItems: 'center'
   },
   container: {
     flex: 1,
