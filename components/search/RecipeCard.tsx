@@ -40,12 +40,14 @@ export default function RecipeCard({recipeId, title, totalTime, tags, imageSourc
 
         {/* Middle part */}
         <ThemedView style={styles.descriptionContainer}>
-          <Link href={`/recipe/${recipeId}`} asChild>
-            <Pressable>
-              <ThemedText type='defaultSemiBold' style={{height: 48}}>{title}</ThemedText>
-            </Pressable>
-          </Link>
-          <ThemedView>
+          <ThemedView style={{marginVertical: 4}}>
+            <Link href={`/recipe/${recipeId}`} asChild>
+              <Pressable>
+                <ThemedText type='defaultSemiBold' style={{height: 48}}>{title}</ThemedText>
+              </Pressable>
+            </Link>
+          </ThemedView>
+          <ThemedView style={{marginBottom: -2, marginTop: 0}}>
             <ThemedList 
               style={styles.tagContainer}
               showsHorizontalScrollIndicator={false}
@@ -54,7 +56,7 @@ export default function RecipeCard({recipeId, title, totalTime, tags, imageSourc
               renderItem={({item}) => 
                 <Link href="/" asChild> 
                   <Pressable>
-                    <Tag item={item}/>
+                    <Tag item={item} style={{shadowColor: 'black', elevation: 2, marginBottom: 2, marginTop: -0}}/>
                   </Pressable>
                 </Link>
               }
@@ -87,6 +89,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     padding: 4,
+    shadowColor: 'black',
+    elevation: 3
   },
   tagContainer : {
     columnGap: 8,
@@ -94,7 +98,7 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     flex: 1,
     justifyContent: 'space-between',
-    margin: 4,
+    marginHorizontal: 4,
     paddingLeft: 8,
     paddingRight: 8,
   },

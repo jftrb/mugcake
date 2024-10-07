@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   headerImage: {
     color: "#808080",
     bottom: -90,
-    left: -35,
+    left: -25,
     position: "absolute",
   },
   searchBox: {
@@ -126,5 +126,6 @@ const styles = StyleSheet.create({
   },
   recipeCardsContainer: {
     rowGap: 12,
+    paddingBottom: 4
   },
 });

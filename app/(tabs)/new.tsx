@@ -22,7 +22,7 @@ export default function HomeScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
+      headerBackgroundColor={{ light: "#D3BAD1", dark: "#4C2348" }}
       headerImage={
         <Ionicons size={310} name="add" style={styles.headerImage} />
       }
@@ -83,7 +83,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: "#808080",
+    color: "#B263AD",
     bottom: -90,
     left: -35,
     position: "absolute",
