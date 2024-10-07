@@ -41,7 +41,7 @@ export default function RecipeScreen() {
           Preview
         </ThemedText>
         <Link href={`../`} asChild>
-          <Pressable style={recipeScreenStyles.editButton}>
+          <Pressable style={recipeScreenStyles.backButton}>
             <Ionicons name="arrow-back" size={ribbonIconSize} />
           </Pressable>
         </Link>

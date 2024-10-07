@@ -2,8 +2,9 @@ import alert from "@/libraries/alert";
 import { NavigationProp } from "@react-navigation/native";
 import { BackHandler } from "react-native";
 
-interface PlatformBackHandler {
+export interface PlatformBackHandler {
   setupBackHandler(): () => void;
+  confirmBackGesture(onBackConfirmed: () => void): void;
 }
 
 export class MobileBackHandler implements PlatformBackHandler {
@@ -17,15 +18,27 @@ export class MobileBackHandler implements PlatformBackHandler {
 
   public setupBackHandler(): () => void {
     console.log("Adding listener on 'hardwareBackPress'.");
-    const listener = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => this.onHardwareBackPress()
+    const listener = BackHandler.addEventListener("hardwareBackPress", () =>
+      this.onHardwareBackPress()
     );
 
     return () => {
       console.log("Removing listener on 'hardwareBackPress' at end of effect.");
       listener.remove();
     };
+  }
+
+  public confirmBackGesture(callback: () => void): void {
+    if (this.isFormDirty()) {
+      confirmUnsavedChangesAlert({
+        onCancel: () => {},
+        onDiscard: callback,
+        onDismiss: () => {},
+      });
+    }
+    else {
+      callback();
+    }
   }
 
   private onHardwareBackPress(): boolean {
@@ -57,7 +70,7 @@ export class WebBackHandler implements PlatformBackHandler {
   ) {
     this.navigation = navigation;
     this.isFormDity = isFormDity;
-    this.areChangesSaved = areChangesSaved
+    this.areChangesSaved = areChangesSaved;
   }
 
   public setupBackHandler(): () => void {
@@ -76,6 +89,10 @@ export class WebBackHandler implements PlatformBackHandler {
       console.log("Removing listener on 'beforeRemove' at end of effect.");
       this.navigation.removeListener("beforeRemove", onBeforeRemove);
     };
+  }
+
+  public confirmBackGesture(callback: () => void) {
+    callback();
   }
 
   private shouldExit(): boolean {

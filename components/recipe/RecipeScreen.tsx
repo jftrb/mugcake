@@ -8,7 +8,7 @@ import {
   StatusBar,
   StyleSheet,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 export default function RecipeScreen({ recipe }: { recipe: RecipeProps }) {
   return (
@@ -18,6 +18,13 @@ export default function RecipeScreen({ recipe }: { recipe: RecipeProps }) {
         <Link href={`./edit`} asChild>
           <Pressable style={recipeScreenStyles.editButton}>
             <Feather name="edit" size={ribbonIconSize} />
+          </Pressable>
+        </Link>
+        
+        <ThemedView style={{flex: 1}}/>
+        <Link href={`../`} asChild>
+          <Pressable style={recipeScreenStyles.backButton}>
+            <Ionicons name="arrow-back" size={ribbonIconSize} />
           </Pressable>
         </Link>
       </ThemedView>
@@ -48,6 +55,14 @@ export const recipeScreenStyles = StyleSheet.create({
     borderRadius: 4,
     width: 40,
     alignItems: 'center'
+  },
+  backButton: {
+    padding: 2,
+    borderWidth: 0,
+    backgroundColor: "transparent",
+    borderRadius: 4,
+    width: 40,
+    alignItems: 'center',
   },
   container: {
     flex: 1,

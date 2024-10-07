@@ -1,14 +1,18 @@
 import { ThemedView } from "@/components/ThemedView";
-import { router, useNavigation } from "expo-router";
+import { Link, router, useNavigation } from "expo-router";
 import { Platform, Pressable, SafeAreaView } from "react-native";
 import { useEffect } from "react";
 import EditableRecipe from "@/components/recipe/edit/EditableRecipe";
 import { getLocalStorage } from "@/libraries/localStorage";
 import { RecipeProps } from "@/components/recipe/Recipe";
-import { MobileBackHandler, WebBackHandler } from "@/libraries/backHandler";
+import {
+  MobileBackHandler,
+  PlatformBackHandler,
+  WebBackHandler,
+} from "@/libraries/backHandler";
 import { useForm } from "react-hook-form";
 import { randomUUID } from "expo-crypto";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { recipeScreenStyles, ribbonIconSize } from "../RecipeScreen";
 
 export default function EditScreen({ id }: { id: string }) {
@@ -26,7 +30,7 @@ export default function EditScreen({ id }: { id: string }) {
   });
 
   let changesSaved = false;
-  const backHandler =
+  const backHandler: PlatformBackHandler =
     Platform.OS === "web"
       ? new WebBackHandler(
           navigation,
@@ -69,6 +73,16 @@ export default function EditScreen({ id }: { id: string }) {
           })}
         >
           <AntDesign size={ribbonIconSize} name={"eyeo"} />
+        </Pressable>
+
+        <ThemedView style={{ flex: 1 }} />
+        <Pressable
+          style={recipeScreenStyles.backButton}
+          onPress={() => {
+            backHandler.confirmBackGesture(() => router.navigate(`../`));
+          }}
+        >
+          <Ionicons name="arrow-back" size={ribbonIconSize} />
         </Pressable>
       </ThemedView>
 

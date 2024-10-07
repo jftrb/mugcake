@@ -4,7 +4,7 @@ import CookingSteps, {
 import PrepCard from "@/components/recipe/PrepCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Image, StyleSheet, View } from "react-native";
+import { Image, StyleSheet } from "react-native";
 import { ScrollView } from "react-native";
 import Notes, { NoteProps } from "./Notes";
 import { TagProps } from "./Tags";
