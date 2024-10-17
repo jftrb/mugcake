@@ -1,30 +1,21 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import RecipeCard from "@/components/search/RecipeCard";
 import { ThemedList } from "@/components/ThemedList";
-import { ImageButton } from "@/components/ImageButton";
 import { recipesTable } from "@/assets/placeholders/recipe";
-import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import SearchBar from "@/components/search/SearchBar";
 
-const recipes = recipesTable.map((recipe) => {
-  return {
-    id: recipe.id,
-    title: recipe.title,
-    totalTime: recipe.prepInfo.totalTime,
-    tags: recipe.tags,
-    imageSource: recipe.imageSource,
-  };
-});
 
 function searchRecipes(text: string) {
   const matches = recipesTable.filter(
     (recipe) =>
       recipe.title.toLowerCase().includes(text.toLowerCase()) ||
-      recipe.tags.map((t) => t.value).includes(text)
+      recipe.tags.map((t) => t.value.toLowerCase()).includes(text.toLowerCase())
   );
   const out = matches.map((recipe) => {
     return {
@@ -41,13 +32,8 @@ function searchRecipes(text: string) {
 }
 
 export default function SearchTabScreen() {
-  const [searchText, setSearchText] = useState("");
-  const [searchResults, setSearchResults] = useState(recipes);
-
-  function updateSearchResults(searchText: string) {
-    const results = searchRecipes(searchText);
-    setSearchResults(results);
-  }
+  const { query = "" }: { query: string } = useLocalSearchParams();
+  const searchResults = searchRecipes(query);
 
   return (
     <ParallaxScrollView
@@ -58,22 +44,7 @@ export default function SearchTabScreen() {
       contentStyle={styles.contentContainer}
     >
       <ThemedView style={styles.searchHeaderContainer}>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">Search</ThemedText>
-          <TextInput
-            style={styles.searchBox}
-            onChangeText={setSearchText}
-            onSubmitEditing={() => updateSearchResults(searchText)}
-            value={searchText}
-          ></TextInput>
-          <ImageButton
-            onPress={() => updateSearchResults(searchText)}
-            source={require("@/assets/images/search-icon.png")}
-            imageStyle={{
-              borderRadius: 16,
-            }}
-          ></ImageButton>
-        </ThemedView>
+        <SearchBar query={query}/>
         <ThemedText>
           {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
         </ThemedText>
@@ -92,7 +63,7 @@ export default function SearchTabScreen() {
             imageSource={item.imageSource}
           />
         )}
-      ></ThemedList>
+      />
     </ParallaxScrollView>
   );
 }
@@ -106,18 +77,6 @@ const styles = StyleSheet.create({
     left: -25,
     position: "absolute",
   },
-  searchBox: {
-    flex: 1,
-    borderWidth: 0.5,
-    borderRadius: 16,
-    paddingLeft: 8,
-    paddingRight: 8,
-    backgroundColor: "white",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
   searchHeaderContainer: {
     paddingHorizontal: 24 - contentPadding,
   },
@@ -126,6 +85,6 @@ const styles = StyleSheet.create({
   },
   recipeCardsContainer: {
     rowGap: 12,
-    paddingBottom: 4
+    paddingBottom: 4,
   },
 });
