@@ -1,4 +1,5 @@
-import Recipe, { RecipeProps } from "@/components/recipe/Recipe";
+import Recipe from "@/components/recipe/Recipe";
+import { RecipeModel } from "@/models/mugcakeApiModels";
 import { ThemedView } from "@/components/ThemedView";
 import { Link } from "expo-router";
 import { Pressable, SafeAreaView, StyleSheet } from "react-native";
@@ -22,7 +23,7 @@ export default function RecipeScreen() {
   }, [navigation, storage]);
 
   const recipeJSON = storage.getString("preview") as string;
-  const recipe: RecipeProps = JSON.parse(recipeJSON);
+  const recipe: RecipeModel = JSON.parse(recipeJSON);
 
   return (
     <SafeAreaView style={recipeScreenStyles.safeArea}>

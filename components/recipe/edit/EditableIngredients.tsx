@@ -3,80 +3,105 @@ import { ThemedTextInput } from "@/components/ThemedTextInput";
 import { ThemedView } from "@/components/ThemedView";
 import { Editable } from "./EditableList";
 import RemoveButton from "./RemoveButton";
-import { IngredientProps, ingredientStyles } from "../Ingredients";
-import { RecipeProps } from "../Recipe";
-import { Control, Controller, useFieldArray, UseFieldArrayRemove } from "react-hook-form";
+import { ingredientStyles } from "../Ingredients";
+import { IngredientModel } from "@/models/mugcakeApiModels";
+import { RecipeModel } from "@/models/mugcakeApiModels";
+import {
+  Control,
+  Controller,
+  useFieldArray,
+  UseFieldArrayRemove,
+} from "react-hook-form";
 import { ThemedText } from "@/components/ThemedText";
 import { Pressable, StyleProp, TextStyle } from "react-native";
 import { editStyles } from "./EditStyles";
 
-const EditableIngredient = ({ 
-  control, 
+const EditableIngredient = ({
+  control,
   sectionIndex,
-  index, 
-  field, 
-  remove 
-} : {
-  remove: UseFieldArrayRemove
-  control?: Control<RecipeProps>
-  index: number
-  sectionIndex: number
-  field: IngredientProps
+  index,
+  field,
+  remove,
+}: {
+  remove: UseFieldArrayRemove;
+  control?: Control<RecipeModel>;
+  index: number;
+  sectionIndex: number;
+  field: IngredientModel;
 }) => {
-  function controlField(name: "quantity" | "unit" | "ingredient", style: StyleProp<TextStyle>){
+  function controlField(
+    name: "quantity" | "unit" | "ingredient",
+    style: StyleProp<TextStyle>
+  ) {
     return (
       <Controller
         control={control}
-        name={`ingredients.${sectionIndex}.ingredients.${index}.${name}`}
-        render={({ field: { onChange, onBlur, value } }) =>
-          <ThemedTextInput style={style} 
+        name={`ingredientSections.${sectionIndex}.ingredients.${index}.${name}`}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <ThemedTextInput
+            style={style}
             value={`${value}`}
             onChangeText={onChange}
             onBlur={onBlur}
           />
-        }
+        )}
       />
-    )
+    );
   }
 
   return (
     <ThemedView style={ingredientStyles.ingredientContainer}>
-        <RemoveButton 
-          style={{marginRight: 12}} 
-          onPress={() => {
-            console.log(`Deleting ingredient ${index} [id: ${field.id}]`)
-            remove(index)
-          }}
-        />
-        {controlField("quantity", {width: 40, marginRight: 6, borderWidth: .5})}
-        {controlField("unit", {width: 100, marginRight: 6, borderWidth: .5})}
-        {controlField("ingredient", {borderWidth: .5, flex: 1})}
+      <RemoveButton
+        style={{ marginRight: 12 }}
+        onPress={() => {
+          console.log(`Deleting ingredient ${index}`);
+          remove(index);
+        }}
+      />
+      {controlField("quantity", {
+        width: 40,
+        marginRight: 6,
+        borderWidth: 0.5,
+      })}
+      {controlField("unit", { width: 100, marginRight: 6, borderWidth: 0.5 })}
+      {controlField("ingredient", { borderWidth: 0.5, flex: 1 })}
     </ThemedView>
-)}
+  );
+};
 
-export default function EditableIngredients({ control, sectionIndex }: Editable<RecipeProps> & {sectionIndex: number}){
+export default function EditableIngredients({
+  control,
+  sectionIndex,
+}: Editable<RecipeModel> & { sectionIndex: number }) {
   const { fields, append, remove } = useFieldArray({
-    name: `ingredients.${sectionIndex}.ingredients`,
-    control
-  })  
+    name: `ingredientSections.${sectionIndex}.ingredients`,
+    control,
+  });
   return (
     <ThemedView style={editStyles.contentList}>
-      {fields.map((field, index) => 
-        <EditableIngredient key={field.id} {...{ sectionIndex, index, field, remove, control }}/>
-      )}
-      <Pressable 
+      {fields.map((field, index) => (
+        <EditableIngredient
+          key={field.id}
+          {...{ sectionIndex, index, field, remove, control }}
+        />
+      ))}
+      <Pressable
         onPress={() => {
-          console.log('Adding ingredient')
-          append({quantity: 1, unit: "", ingredient: "", id: randomUUID()})
+          console.log("Adding ingredient");
+          append({ quantity: 1, unit: "", ingredient: "", other: "" });
         }}
-        style={editStyles.deleteButtonPressArea}>
+        style={editStyles.deleteButtonPressArea}
+      >
         <ThemedText>+ Add Ingredient</ThemedText>
       </Pressable>
     </ThemedView>
-  )
+  );
 }
 
-export function addEmptyItem<ItemT>(data: ArrayLike<ItemT> | null | undefined, createNewItem: () => ItemT) {
+export function addEmptyItem<ItemT>(
+  data: ArrayLike<ItemT> | null | undefined,
+  createNewItem: () => ItemT
+) {
   const list = data === null || data === undefined ? Array<ItemT>() : data;
   const newList = Array<ItemT>(list.length + 1);
 

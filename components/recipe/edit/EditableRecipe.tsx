@@ -1,18 +1,14 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Platform, ScrollView } from "react-native";
-import { RecipeProps, recipeStyles } from "../Recipe";
+import { ScrollView } from "react-native";
+import { recipeStyles } from "../Recipe";
+import { RecipeModel } from "@/models/mugcakeApiModels";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import EditableTags from "./EditableTags";
-import { Controller, useForm, UseFormSetFocus } from "react-hook-form";
-import { ImageButton } from "@/components/ImageButton";
+import { Controller, UseFormSetFocus } from "react-hook-form";
 import PrepCard from "../PrepCard";
 import EditableNotes from "./EditableNotes";
 import EditableCookingSteps from "./EditableCookingSteps";
-import { getLocalStorage } from "@/libraries/localStorage";
-import { router, useNavigation } from "expo-router";
-import { useEffect } from "react";
-import { MobileBackHandler, WebBackHandler } from "@/libraries/backHandler";
 import EditableIngredientSections from "./EditableIngredientSection";
 import { Editable } from "./EditableList";
 
@@ -21,9 +17,9 @@ export default function EditableRecipe({
   recipeProps,
   control,
   setFocus,
-}: Editable<RecipeProps> & {
-  recipeProps: RecipeProps;
-  setFocus: UseFormSetFocus<RecipeProps>;
+}: Editable<RecipeModel> & {
+  recipeProps: RecipeModel;
+  setFocus: UseFormSetFocus<RecipeModel>;
 }) {
   return (
     <>

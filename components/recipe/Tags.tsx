@@ -1,13 +1,9 @@
 import { Pressable } from "react-native";
 import { ThemedList } from "../ThemedList";
 import { Tag } from "../Tag";
+import { TagModel } from "@/models/mugcakeApiModels";
 
-export type TagProps = {
-  id: string;
-  value: string;
-};
-
-export default function Tags({ children }: { children: TagProps[] }) {
+export default function Tags({ children }: { children: TagModel[] }) {
   return (
     <>
       <ThemedList

@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, Text, TextInput } from "react-native";
+import { Pressable, StyleSheet, TextInput } from "react-native";
 import { ImageButton } from "../ImageButton";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";

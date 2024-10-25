@@ -6,8 +6,8 @@ import {
   Controller,
   useFieldArray,
 } from "react-hook-form";
-import { IngredientSectionProps } from "../IngredientSection";
-import { RecipeProps } from "../Recipe";
+import { IngredientSectionModel } from "@/models/mugcakeApiModels";
+import { RecipeModel } from "@/models/mugcakeApiModels";
 import RemoveButton from "./RemoveButton";
 import { editStyles } from "./EditStyles";
 import { Editable } from "./EditableList";
@@ -22,9 +22,9 @@ const EditableIngredientSection = ({
   remove: removeSection,
 }: {
   remove: UseFieldArrayRemove;
-  control?: Control<RecipeProps>;
+  control?: Control<RecipeModel>;
   index: number;
-  field: IngredientSectionProps;
+  field: IngredientSectionModel;
 }) => {
   return (
     <>
@@ -40,7 +40,7 @@ const EditableIngredientSection = ({
         />
         <Controller
           control={control}
-          name={`ingredients.${index}.header`}
+          name={`ingredientSections.${index}.header`}
           render={({ field: { onChange, onBlur, value } }) => (
             <ThemedTextInput
               type="defaultSemiBold"
@@ -61,16 +61,16 @@ const EditableIngredientSection = ({
 
 export default function EditableIngredientSections({
   control,
-}: Editable<RecipeProps>) {
+}: Editable<RecipeModel>) {
   const { fields, append, remove } = useFieldArray({
-    name: "ingredients",
+    name: "ingredientSections",
     control,
   });
   return (
     <ThemedView style={editStyles.contentList}>
       {fields.map((field, index) => (
         <EditableIngredientSection
-          key={field.header}
+          key={index}
           {...{ index, field, remove, control }}
         />
       ))}

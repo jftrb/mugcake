@@ -3,39 +3,41 @@ import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
 import { ThemedList } from "../ThemedList";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { IngredientModel } from "@/models/mugcakeApiModels";
 
-export interface IngredientProps {
-  id: string
-  quantity: number,
-  unit: string,
-  ingredient: string,
-}
-
-function Ingredient({quantity, unit, ingredient} : IngredientProps) {
+function Ingredient({ quantity, unit, ingredient }: IngredientModel) {
   return (
     <ThemedView style={ingredientStyles.ingredientContainer}>
-      <BouncyCheckbox 
+      <BouncyCheckbox
         textComponent={
-          <ThemedText style={ingredientStyles.textContainer}>{`(${quantity} ${unit}) ${ingredient}`}</ThemedText>
-        } 
-        textStyle={{textDecorationLine: "none", color: 'red'}}
+          <ThemedText
+            style={ingredientStyles.textContainer}
+          >{`(${quantity} ${unit}) ${ingredient}`}</ThemedText>
+        }
+        textStyle={{ textDecorationLine: "none", color: "red" }}
       />
     </ThemedView>
-)}
+  );
+}
 
-export default function Ingredients({children}: {children: IngredientProps[]}){
+export default function Ingredients({
+  children,
+}: {
+  children: IngredientModel[];
+}) {
   return (
-    <ThemedList 
+    <ThemedList
       style={ingredientStyles.ingredientList}
       scrollEnabled={false}
       data={children}
-      renderItem={({item}) => <Ingredient {...item}/>}
-    />)
+      renderItem={({ item }) => <Ingredient {...item} />}
+    />
+  );
 }
 
 export const ingredientStyles = StyleSheet.create({
   ingredientContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     alignContent: "center",
     marginTop: 6,
   },
@@ -43,8 +45,8 @@ export const ingredientStyles = StyleSheet.create({
     rowGap: 6,
   },
   textContainer: {
-    marginLeft: 8, 
-    paddingBottom: 4, 
-    marginTop: -2
-  }
-})
+    marginLeft: 8,
+    paddingBottom: 4,
+    marginTop: -2,
+  },
+});

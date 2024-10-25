@@ -1,4 +1,5 @@
-import Recipe, { RecipeProps } from "@/components/recipe/Recipe";
+import Recipe from "@/components/recipe/Recipe";
+import { RecipeModel } from "@/models/mugcakeApiModels";
 import { ThemedView } from "@/components/ThemedView";
 import { Link } from "expo-router";
 import {
@@ -10,7 +11,7 @@ import {
 } from "react-native";
 import { Feather, Ionicons } from "@expo/vector-icons";
 
-export default function RecipeScreen({ recipe }: { recipe: RecipeProps }) {
+export default function RecipeScreen({ recipe }: { recipe: RecipeModel }) {
   return (
     <SafeAreaView style={recipeScreenStyles.safeArea}>
       {/* Button Ribbon */}
@@ -20,8 +21,8 @@ export default function RecipeScreen({ recipe }: { recipe: RecipeProps }) {
             <Feather name="edit" size={ribbonIconSize} />
           </Pressable>
         </Link>
-        
-        <ThemedView style={{flex: 1}}/>
+
+        <ThemedView style={{ flex: 1 }} />
         <Link href={`../`} asChild>
           <Pressable style={recipeScreenStyles.backButton}>
             <Ionicons name="arrow-back" size={ribbonIconSize} />
@@ -54,7 +55,7 @@ export const recipeScreenStyles = StyleSheet.create({
     backgroundColor: "#dddddd",
     borderRadius: 4,
     width: 40,
-    alignItems: 'center'
+    alignItems: "center",
   },
   backButton: {
     padding: 2,
@@ -62,7 +63,7 @@ export const recipeScreenStyles = StyleSheet.create({
     backgroundColor: "transparent",
     borderRadius: 4,
     width: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
   container: {
     flex: 1,

@@ -2,29 +2,28 @@ import { StyleSheet } from "react-native";
 import { ThemedList } from "../ThemedList";
 import { ThemedText } from "../ThemedText";
 import { ThemedViewProps } from "../ThemedView";
+import { CookingStepModel } from "@/models/mugcakeApiModels";
 
-export type CookingStepProps = {
-  id: string,
-  value: string
+function CookingStep({ value, ...otherProps }: { value: string }) {
+  return <ThemedText {...otherProps}>{`\u2023 ${value}`}</ThemedText>;
 }
 
-function CookingStep({value, id, ...otherProps} : CookingStepProps){
-  return <ThemedText {...otherProps}>{`\u2023 ${value}`}</ThemedText>
-}
-
-export default function CookingSteps({style, data}: ThemedViewProps & {data: CookingStepProps[]}){
+export default function CookingSteps({
+  style,
+  data,
+}: ThemedViewProps & { data: CookingStepModel[] }) {
   return (
-    <ThemedList 
+    <ThemedList
       style={[styles.stepsList, style]}
       scrollEnabled={false}
       data={data}
-      renderItem={({item}) => <CookingStep {...item}/>}
+      renderItem={({ item }) => <CookingStep value={item.value} />}
     />
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   stepsList: {
-    rowGap: 4
+    rowGap: 4,
   },
-})
+});

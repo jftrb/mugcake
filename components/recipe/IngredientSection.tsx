@@ -2,19 +2,17 @@ import { StyleSheet } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
 import { ThemedList } from "../ThemedList";
-import Ingredients, { IngredientProps } from "./Ingredients";
+import Ingredients from "./Ingredients";
+import { IngredientSectionModel } from "@/models/mugcakeApiModels";
 
-export interface IngredientSectionProps {
-  header: string;
-  ingredients: IngredientProps[];
-}
-
-function IngredientSection({ header, ingredients }: IngredientSectionProps) {
+function IngredientSection({ header, ingredients }: IngredientSectionModel) {
   return (
     <ThemedView style={{}}>
-      {header.length > 0 ? (
-        <ThemedText type="subsubtitle" style={{marginLeft: 0}}>{header}</ThemedText>
-      ) : null}
+      {header === undefined || header.length === 0 ? null : (
+        <ThemedText type="subsubtitle" style={{ marginLeft: 0 }}>
+          {header}
+        </ThemedText>
+      )}
       <Ingredients>{ingredients}</Ingredients>
     </ThemedView>
   );
@@ -23,7 +21,7 @@ function IngredientSection({ header, ingredients }: IngredientSectionProps) {
 export default function IngredientSections({
   data,
 }: {
-  data: IngredientSectionProps[];
+  data: IngredientSectionModel[];
 }) {
   let i = 0;
   return (

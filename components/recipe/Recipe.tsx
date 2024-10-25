@@ -1,36 +1,15 @@
-import CookingSteps, {
-  CookingStepProps,
-} from "@/components/recipe/CookingSteps";
+import CookingSteps from "@/components/recipe/CookingSteps";
 import PrepCard from "@/components/recipe/PrepCard";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Image, StyleSheet } from "react-native";
 import { ScrollView } from "react-native";
-import Notes, { NoteProps } from "./Notes";
-import { TagProps } from "./Tags";
-import IngredientSections, {
-  IngredientSectionProps,
-} from "./IngredientSection";
-
-export type RecipeProps = {
-  id: string;
-  title: string;
-  url: string;
-  tags: TagProps[];
-  imageSource: string;
-  prepInfo: {
-    prepTime: string;
-    cookTime: string;
-    totalTime: string;
-    yield: string;
-  };
-  ingredients: IngredientSectionProps[];
-  directions: CookingStepProps[];
-  notes: NoteProps[];
-};
+import Notes from "./Notes";
+import IngredientSections from "./IngredientSection";
+import { RecipeModel } from "@/models/mugcakeApiModels";
 
 // TODO : check to replace FlatList with a .map() to see if I can avoid having the scrollEnabled=false workaround
-export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
+export default function Recipe({ recipeProps }: { recipeProps: RecipeModel }) {
   return (
     <ScrollView
       contentContainerStyle={{
@@ -78,7 +57,7 @@ export default function Recipe({ recipeProps }: { recipeProps: RecipeProps }) {
             Ingredients :
           </ThemedText>
           <ThemedView style={recipeStyles.ingredients}>
-            <IngredientSections data={recipeProps.ingredients} />
+            <IngredientSections data={recipeProps.ingredientSections} />
           </ThemedView>
 
           {/* Cooking Steps */}

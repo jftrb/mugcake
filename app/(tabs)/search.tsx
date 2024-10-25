@@ -6,34 +6,37 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import RecipeCard from "@/components/search/RecipeCard";
 import { ThemedList } from "@/components/ThemedList";
-import { recipesTable } from "@/assets/placeholders/recipe";
 import { useLocalSearchParams } from "expo-router";
 import SearchBar from "@/components/search/SearchBar";
+import { GetRecipeSummaries } from "@/libraries/mugcakeApi";
+import { useEffect, useState } from "react";
+import { RecipeSummaryModel } from "@/models/mugcakeApiModels";
 
-
-function searchRecipes(text: string) {
-  const matches = recipesTable.filter(
-    (recipe) =>
-      recipe.title.toLowerCase().includes(text.toLowerCase()) ||
-      recipe.tags.map((t) => t.value.toLowerCase()).includes(text.toLowerCase())
+async function searchRecipes(text: string) {
+  const summaries = await GetRecipeSummaries();
+  console.log(JSON.stringify(summaries));
+  const matches = summaries.filter(
+    (summary) =>
+      summary.title.toLowerCase().includes(text.toLowerCase()) ||
+      summary.tags.map((t) => t.toLowerCase()).includes(text.toLowerCase())
   );
-  const out = matches.map((recipe) => {
-    return {
-      id: recipe.id,
-      title: recipe.title,
-      totalTime: recipe.prepInfo.totalTime,
-      tags: recipe.tags,
-      imageSource: recipe.imageSource,
-    };
-  });
 
-  console.log(out);
-  return out;
+  console.log(matches);
+  return matches;
 }
 
 export default function SearchTabScreen() {
   const { query = "" }: { query: string } = useLocalSearchParams();
-  const searchResults = searchRecipes(query);
+  const [searchResults, setSearchResults] = useState<RecipeSummaryModel[]>([]);
+  useEffect(() => {
+    async function search() {
+      console.log("Querying API");
+      const result = await searchRecipes(query);
+      setSearchResults(result);
+    }
+
+    search().catch(console.error);
+  }, [query, setSearchResults]);
 
   return (
     <ParallaxScrollView
@@ -44,7 +47,7 @@ export default function SearchTabScreen() {
       contentStyle={styles.contentContainer}
     >
       <ThemedView style={styles.searchHeaderContainer}>
-        <SearchBar query={query}/>
+        <SearchBar query={query} />
         <ThemedText>
           {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
         </ThemedText>
@@ -54,15 +57,7 @@ export default function SearchTabScreen() {
         style={styles.recipeCardsContainer}
         data={searchResults}
         scrollEnabled={false}
-        renderItem={({ item }) => (
-          <RecipeCard
-            recipeId={item.id}
-            title={item.title}
-            totalTime={item.totalTime}
-            tags={item.tags.map((t) => t.value)}
-            imageSource={item.imageSource}
-          />
-        )}
+        renderItem={({ item }) => <RecipeCard {...item} />}
       />
     </ParallaxScrollView>
   );
