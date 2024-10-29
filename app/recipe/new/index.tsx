@@ -1,5 +1,8 @@
 import EditScreen from "@/components/recipe/edit/EditScreen";
-import { useNavigation } from "expo-router";
+import { PreLoadRecipe } from "@/components/search/RecipeCard";
+import { PostRecipe } from "@/libraries/mugcakeApi";
+import { RecipeModel } from "@/models/mugcakeApiModels";
+import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";
 
 export default function RecipeEditScreen() {
@@ -9,5 +12,20 @@ export default function RecipeEditScreen() {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-  return <EditScreen id={"new"} />;
+  async function Send(data: RecipeModel) {
+    const id = await PostRecipe(data);
+    console.log(`Added new recipe with ID ${id}`);
+    await PreLoadRecipe(id);
+    router.replace(`/recipe/${id}`);
+  }
+
+  return (
+    <EditScreen
+      id={"new"}
+      onSave={(data) => {
+        console.log("Saving new recipe");
+        Send(data);
+      }}
+    />
+  );
 }

@@ -30,7 +30,7 @@ const EditableIngredient = ({
   field: IngredientModel;
 }) => {
   function controlField(
-    name: "quantity" | "unit" | "ingredient",
+    name: "quantity" | "unit" | "ingredient" | "other",
     style: StyleProp<TextStyle>
   ) {
     return (

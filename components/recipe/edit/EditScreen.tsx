@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { recipeScreenStyles, ribbonIconSize } from "../RecipeScreen";
 
-export default function EditScreen({ id }: { id: string }) {
+export default function EditScreen({ id, onSave }: { id: string, onSave: (data: RecipeModel) => void }) {
   const navigation = useNavigation();
   const storage = getLocalStorage();
   const recipe: RecipeModel = getRecipe(id);
@@ -55,8 +55,8 @@ export default function EditScreen({ id }: { id: string }) {
               console.log(`Updating storage value for recipe id : ${id}`);
               storage.set(id, JSON.stringify(data));
               changesSaved = true;
+              onSave(data)
             }
-            router.navigate(`/recipe/${id}`);
           })}
         >
           <Feather size={ribbonIconSize} name={"save"} />

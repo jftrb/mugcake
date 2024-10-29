@@ -69,7 +69,7 @@ export function parseIngredientSection(section: IngredientSection) {
     header: isHeaderInvalid(section.header) ? "" : section.header,
     ingredients: section.ingredients.map((i) => {
       return {
-        quantity: i.quantity,
+        quantity: Number(i.quantity) ? Number(i.quantity) : 0,
         unit: i.unit === null ? '' : i.unit,
         ingredient: i.name,
         other: i.other,

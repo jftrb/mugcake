@@ -8,16 +8,22 @@ import { Link, router } from "expo-router";
 import { Tag } from "../Tag";
 import { RecipeModel, RecipeSummaryModel } from "@/models/mugcakeApiModels";
 import { getLocalStorage } from "@/libraries/localStorage";
-import { GetRecipe } from "@/libraries/mugcakeApi";
+import { DeleteRecipe, GetRecipe } from "@/libraries/mugcakeApi";
+import { AntDesign } from "@expo/vector-icons";
+import ContextMenuProvider from "../ContextMenuProvider";
+import alert from "@/libraries/alert";
+import VibratingPressable from "../VibratingPressable";
 
 export default function RecipeCard({
-  recipeId,
-  title,
-  totalTime,
-  tags,
-  imageSource,
-}: RecipeSummaryModel) {
+  summary,
+  onDelete,
+}: {
+  summary: RecipeSummaryModel;
+  onDelete: () => void;
+}) {
   const borderColor = useThemeColor({}, "text");
+
+  const { recipeId, favorite, title, totalTime, tags, imageSource } = summary;
 
   const dynamicStyle = StyleSheet.create({
     border: {
@@ -25,27 +31,46 @@ export default function RecipeCard({
     },
   });
 
+  function PressHandler({ children }: { children: React.ReactNode }) {
+    return (
+      <VibratingPressable
+        longPressPattern={10}
+        onLongPress={() => {}}
+        pressPattern={10}
+        onPress={async () => {
+          await PreLoadRecipe(recipeId);
+          router.navigate(`/recipe/${recipeId}`);
+        }}
+      >
+        {children}
+      </VibratingPressable>
+    );
+  }
+
   return (
     <ThemedView style={[styles.horizontal, dynamicStyle.border, styles.border]}>
       <ThemedView style={[styles.horizontal, , { flex: 1, padding: 4 }]}>
         {/* Image */}
-        <ThemedView
-          style={{ alignSelf: "center" }}
-        >
-          <Pressable onPress={() => {loadRecipe(recipeId)}}>
-            <Image style={styles.image} source={{ uri: imageSource }} />
-          </Pressable>
+        <ThemedView style={{ alignSelf: "center" }}>
+          <RecipeCardContextMenu {...summary} onDelete={onDelete}>
+            <PressHandler>
+              <Image style={styles.image} source={{ uri: imageSource }} />
+            </PressHandler>
+          </RecipeCardContextMenu>
         </ThemedView>
 
         {/* Middle part */}
         <ThemedView style={styles.descriptionContainer}>
           <ThemedView style={{ marginVertical: 4 }}>
-            <Pressable onPress={() => {loadRecipe(recipeId)}}>
-              <ThemedText type="defaultSemiBold" style={{ height: 48 }}>
-                {title}
-              </ThemedText>
-            </Pressable>
+            <RecipeCardContextMenu {...summary} onDelete={onDelete}>
+              <PressHandler>
+                <ThemedText type="defaultSemiBold" style={{ height: 48 }}>
+                  {title}
+                </ThemedText>
+              </PressHandler>
+            </RecipeCardContextMenu>
           </ThemedView>
+          {/* Tags */}
           <ThemedView style={{ marginBottom: -2, marginTop: 0 }}>
             <ThemedList
               style={styles.tagContainer}
@@ -54,7 +79,7 @@ export default function RecipeCard({
               data={tags}
               renderItem={({ item }) => (
                 <Link href={`./search?query=${item}`} asChild>
-                  <Pressable>
+                  <Pressable onLongPress={() => {}}>
                     <Tag
                       item={item}
                       style={{
@@ -80,23 +105,86 @@ export default function RecipeCard({
           dynamicStyle.border,
         ]}
       >
-        <Pressable onPress={() => {loadRecipe(recipeId)}}>
-          <ThemedView>
+        <RecipeCardContextMenu {...summary} onDelete={onDelete}>
+          <PressHandler>
             <PrepCard label="Total Time" value={totalTime}></PrepCard>
-          </ThemedView>
+          </PressHandler>
+        </RecipeCardContextMenu>
+      </ThemedView>
+      <ThemedView style={styles.favoriteIcon}>
+        {/* TODO : switch the state of Favorite */}
+        <Pressable>
+          <AntDesign
+            name={favorite ? "star" : "staro"}
+            size={20}
+            color={"gold"}
+          />
         </Pressable>
       </ThemedView>
     </ThemedView>
   );
 }
 
-async function loadRecipe(recipeId: number) {
-    const recipe = await GetRecipe(recipeId)
-    if (recipe !== undefined) {
-      console.log(`Recipe ID ${recipeId} found. Initializing storage.`)
-      initStorage(recipeId, recipe);
-    }
-    router.navigate(`/recipe/${recipeId}`)
+function RecipeCardContextMenu({
+  recipeId,
+  title,
+  onDelete,
+  children,
+}: RecipeSummaryModel & { onDelete: () => void; children: React.ReactNode }) {
+  return (
+    <ContextMenuProvider
+      actions={[
+        {
+          title: "Edit",
+          onPress: async () => {
+            await PreLoadRecipe(recipeId);
+            router.navigate(`/recipe/${recipeId}`);
+            router.navigate(`/recipe/${recipeId}/edit`);
+          },
+        },
+        {
+          title: "Delete",
+          destructive: true,
+          onPress: () => {
+            alert(
+              "Delete",
+              `Are you sure you wish to delete ${title}?`,
+              [
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                  onPress: () => {},
+                },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: () => {
+                    console.log("Delete Recipe Pressed");
+                    // TODO : handle case where delete fails
+                    DeleteRecipe(recipeId);
+                    onDelete();
+                  },
+                },
+              ],
+              {
+                cancelable: true,
+              }
+            );
+          },
+        },
+      ]}
+    >
+      {children}
+    </ContextMenuProvider>
+  );
+}
+
+export async function PreLoadRecipe(recipeId: number) {
+  const recipe = await GetRecipe(recipeId);
+  if (recipe !== undefined) {
+    console.log(`Recipe ID ${recipeId} found. Initializing storage.`);
+    initStorage(recipeId, recipe);
+  }
 }
 
 function initStorage(recipeId: number, recipe: RecipeModel) {
@@ -108,7 +196,6 @@ function initStorage(recipeId: number, recipe: RecipeModel) {
 
   return storage;
 }
-
 
 const imgSize = 80;
 
@@ -150,10 +237,18 @@ const styles = StyleSheet.create({
   },
   timeContainer: {
     justifyContent: "center",
+    alignContent: "center",
     borderLeftWidth: 1,
     padding: 8,
     margin: -4,
     borderTopRightRadius: 16,
     borderBottomRightRadius: 16,
+  },
+  favoriteIcon: {
+    position: "absolute",
+    right: 0,
+    margin: 6,
+    alignSelf: "flex-start",
+    backgroundColor: "transparent",
   },
 });

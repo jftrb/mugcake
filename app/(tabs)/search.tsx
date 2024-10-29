@@ -57,7 +57,7 @@ export default function SearchTabScreen() {
         style={styles.recipeCardsContainer}
         data={searchResults}
         scrollEnabled={false}
-        renderItem={({ item }) => <RecipeCard {...item} />}
+        renderItem={({ item }) => <RecipeCard summary={item} onDelete={() => {setSearchResults(searchResults.filter(r => r !== item))}} />}
       />
     </ParallaxScrollView>
   );

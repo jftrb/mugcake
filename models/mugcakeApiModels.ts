@@ -1,5 +1,4 @@
 export type RecipeModel = {
-  id: string;
   favorite: boolean;
   title: string;
   url: string;

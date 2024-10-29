@@ -1,6 +1,7 @@
 import gemini from "@google/generative-ai";
 import { GeminiRecipe } from "@/types/geminiTypes";
 import { addTimes, parseIngredientSection, parseTime } from "./geminiParsers";
+import { RecipeModel } from "@/models/mugcakeApiModels";
 
 export class RecipeExtractor {
   private gemini_api_key?: string;
@@ -9,12 +10,13 @@ export class RecipeExtractor {
     this.gemini_api_key = api_key;
   }
 
-  async boilDownRecipe(url: string) {
+  async boilDownRecipe(url: string) : Promise<RecipeModel> {
     const json = await this.promptGeminiForRecipe(url);
     const { prepTime, cookTime, yields, ...rest } =
       this.convertJSONtoRecipe(json);
     return {
       ...rest,
+      favorite: false,
       url: url,
       tags: [],
       prepInfo: {
@@ -34,14 +36,14 @@ export class RecipeExtractor {
       imageSource: geminiRecipe.imageUrl,
       prepTime: parseTime(geminiRecipe.prepTime),
       cookTime: parseTime(geminiRecipe.cookTime),
-      yields: geminiRecipe.yield,
+      yields: `${geminiRecipe.yield}`,
       directions: geminiRecipe.instructions.map((i) => {
         return { value: i };
       }),
       notes: geminiRecipe.notes.map((i) => {
         return { value: i };
       }),
-      ingredients: geminiRecipe.ingredients.map((i) =>
+      ingredientSections: geminiRecipe.ingredients.map((i) =>
         parseIngredientSection(i)
       ),
     };
@@ -69,7 +71,7 @@ export class RecipeExtractor {
         the yield, 
         the recipe instructions as a string array, 
         and the recipe notes as written in a string array from the following HTML page.
-        Also include the recipe ingredients in the following JSON layout : {header: string, ingredients: {"quantity", "unit", "name", "other" }[]}[]: 
+        Also include the recipe ingredients in the following JSON layout : {header: string, ingredients: {"quantity": number, "unit", "name", "other" }[]}[]: 
         \n${trimmedWebPage}
         You can reuse text from the promp without issue`);
 
