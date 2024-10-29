@@ -49,6 +49,7 @@ export class RecipeExtractor {
     };
   }
 
+  // TODO : fallback to initial page if printed version is bad
   async promptGeminiForRecipe(url: string) {
     const genAI = new gemini.GoogleGenerativeAI(this.gemini_api_key as string);
     

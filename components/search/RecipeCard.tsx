@@ -10,7 +10,7 @@ import { RecipeModel, RecipeSummaryModel } from "@/models/mugcakeApiModels";
 import { getLocalStorage } from "@/libraries/localStorage";
 import { DeleteRecipe, GetRecipe } from "@/libraries/mugcakeApi";
 import { AntDesign } from "@expo/vector-icons";
-import ContextMenuProvider from "../ContextMenuProvider";
+import ContextMenuProvider from "../contextMenu/ContextMenuProvider";
 import alert from "@/libraries/alert";
 import VibratingPressable from "../VibratingPressable";
 
