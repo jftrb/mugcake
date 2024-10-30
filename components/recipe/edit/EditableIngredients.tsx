@@ -16,6 +16,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { Pressable, StyleProp, TextStyle } from "react-native";
 import { editStyles } from "./EditStyles";
 
+// TODO : convert number strings into proper numbers (e.g. user inputs a fraction -> convert to number)
 const EditableIngredient = ({
   control,
   sectionIndex,
