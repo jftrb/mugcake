@@ -6,13 +6,24 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "APP_NAME": "Mugcake (dev)",
+        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "APP_NAME": "Mugcake (Preview)",
+        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api"
+      }
     }
   },
   "submit": {
