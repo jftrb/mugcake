@@ -1,6 +1,6 @@
 import gemini from "@google/generative-ai";
 import { GeminiRecipe } from "@/types/geminiTypes";
-import { addTimes, parseIngredientSection, parseTime } from "./geminiParsers";
+import { addTimes, parseIngredientSection, parseTag, parseTime } from "./geminiParsers";
 import { RecipeModel } from "@/models/mugcakeApiModels";
 
 export class RecipeExtractor {
@@ -10,7 +10,7 @@ export class RecipeExtractor {
     this.gemini_api_key = api_key;
   }
 
-  async boilDownRecipe(url: string) : Promise<RecipeModel> {
+  async boilDownRecipe(url: string): Promise<RecipeModel> {
     const json = await this.promptGeminiForRecipe(url);
     const { prepTime, cookTime, yields, ...rest } =
       this.convertJSONtoRecipe(json);
@@ -18,7 +18,6 @@ export class RecipeExtractor {
       ...rest,
       favorite: false,
       url: url,
-      tags: [],
       prepInfo: {
         prepTime: prepTime.toString(),
         cookTime: cookTime.toString(),
@@ -29,11 +28,26 @@ export class RecipeExtractor {
   }
 
   private convertJSONtoRecipe(recipeJSON: string) {
-    const geminiRecipe = JSON.parse(recipeJSON) as GeminiRecipe;
+    let geminiRecipe: GeminiRecipe;
+    try {
+      geminiRecipe = JSON.parse(recipeJSON, function (prop, value) {
+        if (prop === "image_url") {
+          console.debug("Caught badly formed JSON from Gemini")
+          this["imageUrl"] = value;
+        } else {
+          return value;
+        }
+      });
+    } catch (err) {
+      throw Error("Unable to parse recipe. Gemini provided invalid JSON.", {
+        cause: err,
+      });
+    }
 
     return {
       title: geminiRecipe.title,
       imageSource: geminiRecipe.imageUrl,
+      tags: geminiRecipe.tags.map(t => ({id: "", value: parseTag(t)})),
       prepTime: parseTime(geminiRecipe.prepTime),
       cookTime: parseTime(geminiRecipe.cookTime),
       yields: `${geminiRecipe.yield}`,
@@ -52,29 +66,30 @@ export class RecipeExtractor {
   // TODO : fallback to initial page if printed version is bad
   async promptGeminiForRecipe(url: string) {
     const genAI = new gemini.GoogleGenerativeAI(this.gemini_api_key as string);
-    
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
-    let res = await fetch(url);
-    const initialWebPage = await res.text();
-    const webPage = await getPrintableVersion(initialWebPage);
-    console.debug(`Web page length ${webPage.length}`);
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash-latest",
+    });
 
+    const webPage = await getWebPage(url);
     const trimmedWebPage = trimWebPage(webPage);
     console.debug(`Trimmed page length ${trimmedWebPage.length}`);
 
     try {
       const result = await model.generateContent(`Provide to me in JSON format 
         the recipe title, 
-        the recipe image url, 
+        the recipe image url named imageUrl, 
         the preparation time named prepTime,
         the cooking time named cookTime, 
         the yield, 
         the recipe instructions as a string array, 
+        2 to 3 tags (for example the main dish protein, the dish nationality, whether it is a side/main course/dessert, etc.) as a string array,
         and the recipe notes as written in a string array from the following HTML page.
-        Also include the recipe ingredients in the following JSON layout : {header: string, ingredients: {"quantity": number, "unit", "name", "other" }[]}[]: 
+        Also include the recipe ingredients in the following JSON layout : {header: string, ingredients: {"quantity", "unit", "name", "other" }[]}[]: 
         \n${trimmedWebPage}
-        You can reuse text from the promp without issue`);
+        You can reuse text from the prompt without issue.
+        If no recipe is present, do not invent one. 
+        I repeat : do not hallucinate a recipe if none is found in the HTML.`);
 
       const geminiResponse = result.response.text();
       console.log(geminiResponse);
@@ -86,6 +101,18 @@ export class RecipeExtractor {
       throw new Error("Error while prompting Gemini", { cause: err });
     }
   }
+}
+
+async function getWebPage(url: string) {
+  const res = await fetch(url);
+  const initialWebPage = await res.text();
+  console.debug(`Initial web page length ${initialWebPage.length}`);
+
+  // Deactivated as it is too unreliable.
+  // const printableWebPage = await getPrintableVersion(initialWebPage);
+  // console.debug(`Printable web page length ${printableWebPage.length}`);
+
+  return initialWebPage
 }
 
 async function getPrintableVersion(initialPage: string) {

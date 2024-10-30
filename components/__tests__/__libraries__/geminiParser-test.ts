@@ -1,4 +1,10 @@
-import { addTimes, Duration, parseTime } from "@/libraries/geminiParsers";
+import {
+  addTimes,
+  Duration,
+  parseQuantity,
+  parseTag,
+  parseTime,
+} from "@/libraries/geminiParsers";
 
 describe("Testing time parsing", () => {
   const tests = [
@@ -47,17 +53,17 @@ describe("Testing time additions", () => {
     {
       time1: new Duration(5, "min"),
       time2: new Duration(2, "h"),
-      expectedResult: "125 min", 
+      expectedResult: "125 min",
     },
     {
       time1: new Duration(5, "h"),
       time2: new Duration(2, "min"),
-      expectedResult: "302 min", 
+      expectedResult: "302 min",
     },
     {
       time1: new Duration(5, "sec"),
       time2: new Duration(2, "min"),
-      expectedResult: "2 min", 
+      expectedResult: "2 min",
     },
     {
       time1: new Duration(5, "h"),
@@ -70,6 +76,66 @@ describe("Testing time additions", () => {
     test("Parsing the input should yield the correct time", () => {
       const actualTime = addTimes(t.time1, t.time2);
       expect(actualTime.toString()).toBe(t.expectedResult);
+    });
+  });
+});
+
+describe("Testing quantity parsing", () => {
+  const tests = [
+    { input: "5", expectedQuantity: 5 },
+    { input: "5.", expectedQuantity: 5 },
+    { input: "5.5", expectedQuantity: 5.5 },
+    { input: "5,5", expectedQuantity: 5.5 },
+    { input: "1/4", expectedQuantity: 0.25 },
+    { input: "8/2", expectedQuantity: 4 },
+    { input: "7.5/2.5", expectedQuantity: 3 },
+    { input: "¼", expectedQuantity: 0.25 },
+    { input: "½", expectedQuantity: 0.5 },
+    { input: "¾", expectedQuantity: 0.75 },
+    { input: "1/3", expectedQuantity: 0.33 },
+    { input: "", expectedQuantity: 0 },
+  ];
+
+  tests.forEach((t) => {
+    test("Parsing the input should yield the correct quantity", () => {
+      const actualQuantity = parseQuantity(t.input);
+      expect(actualQuantity).toBe(t.expectedQuantity);
+    });
+  });
+
+  const precisionTests = [
+    { input: "1/3", expectedQuantity: 0.3 },
+    { input: "1/3", expectedQuantity: 0.333 },
+  ];
+  precisionTests.forEach((t) => {
+    test("Parsing fractions should lead to at least 2 digits of precision", () => {
+      const actualQuantity = parseQuantity(t.input);
+      expect(actualQuantity).not.toBe(t.expectedQuantity);
+    });
+  });
+
+  const failingTests = [{ input: "fse" }, { input: "18.a" }];
+  failingTests.forEach((t) => {
+    test("Parsing invalid input should throw", () => {
+      expect(() => parseQuantity(t.input)).toThrow();
+    });
+  });
+});
+
+
+describe("Testing tag parsing", () => {
+  const tests = [
+    { input: "tag", expectedTag: "Tag" },
+    { input: "URL", expectedTag: "Url" },
+    { input: "main dish", expectedTag: "Main Dish" },
+    { input: "5", expectedTag: "5" },
+    { input: "", expectedTag: "" },
+  ];
+
+  tests.forEach((t) => {
+    test("Parsing the tag should yield capitalize correctly", () => {
+      const actualTag = parseTag(t.input);
+      expect(actualTag).toBe(t.expectedTag);
     });
   });
 });

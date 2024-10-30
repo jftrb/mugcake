@@ -45,23 +45,23 @@ export default function ParallaxScrollView({
   });
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={parallaxStyles.container}>
       <Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
         <Animated.View
           style={[
-            styles.header,
+            parallaxStyles.header,
             { backgroundColor: headerBackgroundColor[colorScheme] },
             headerAnimatedStyle,
           ]}>
           {headerImage}
         </Animated.View>
-        <ThemedView style={[styles.content, contentStyle]}>{children}</ThemedView>
+        <ThemedView style={[parallaxStyles.content, contentStyle]}>{children}</ThemedView>
       </Animated.ScrollView>
     </ThemedView>
   );
 }
 
-const styles = StyleSheet.create({
+export const parallaxStyles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -73,6 +73,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 32,
     gap: 16,
-    overflow: 'hidden',
+    overflow: 'hidden'
   },
 });

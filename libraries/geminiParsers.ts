@@ -69,13 +69,47 @@ export function parseIngredientSection(section: IngredientSection) {
     header: isHeaderInvalid(section.header) ? "" : section.header,
     ingredients: section.ingredients.map((i) => {
       return {
-        quantity: Number(i.quantity) ? Number(i.quantity) : 0,
+        quantity: parseQuantity(i.quantity),
         unit: i.unit === null ? '' : i.unit,
         ingredient: i.name,
         other: i.other,
       };
     }),
   };
+}
+
+export function parseQuantity(quantity: string): number {
+  const americanQuantity = quantity.replace(",", ".")
+  if (americanQuantity === "¾") return 0.75
+  if (americanQuantity === "½") return 0.5
+  if (americanQuantity === "¼") return 0.25
+  if (americanQuantity === "") return 0
+  
+  const fraction = americanQuantity.match(/(?<numerator>\d+(\.\d+)?)\/(?<denominator>\d+(\.\d+)?)/)
+  if (fraction) { 
+    const numerator = Number(fraction?.groups?.numerator)
+    const denominator = Number(fraction?.groups?.denominator)
+    return round(numerator/denominator, 2)
+  }
+  const out = Number(americanQuantity)
+  if (!out) {
+    throw Error(`Unable to parse quantity provided : "${quantity}"`)
+  }
+  return out
+}
+
+export function parseTag(tag: string): string {
+  const words = tag.split(" ")
+  const capitalizedWords = words.map(w => {
+    if (w.length > 0){
+      return w[0].toUpperCase() + w.slice(1).toLowerCase()
+    }
+  });
+  return capitalizedWords.join(" ")
+}
+
+function round(num: number, fractionDigits: number): number {
+  return Number(num.toFixed(fractionDigits));
 }
 
 function isHeaderInvalid(header: string | null) {

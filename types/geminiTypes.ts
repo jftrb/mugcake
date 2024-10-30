@@ -13,6 +13,7 @@ export type IngredientSection = {
 export type GeminiRecipe = {
   title: string;
   imageUrl: string;
+  tags: string[];
   prepTime: string;
   cookTime: string;
   yield: string;
