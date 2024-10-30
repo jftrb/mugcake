@@ -1,6 +1,6 @@
 import { RecipeModel, RecipeSummaryModel } from "@/models/mugcakeApiModels";
 
-const baseUrl = "http://192.168.18.12:3000/api";
+const baseUrl = process.env.EXPO_PUBLIC_MUGCAKE_API_URL;
 
 function BuildRequest(
   method: "GET" | "POST" | "DELETE" | "PUT",
@@ -39,13 +39,11 @@ async function GetResponse(request: Request) {
 export async function GetRecipeSummaries(): Promise<RecipeSummaryModel[]> {
   const request: RequestInfo = BuildRequest("GET", "/recipes/summaries");
 
-  return GetResponse(request).then(
-    (res) => {
-      const out = res.Summaries as RecipeSummaryModel[]
-      out.map(o => o.tags ? null : o.tags = [])
-      return out
-    }
-  );
+  return GetResponse(request).then((res) => {
+    const out = res.Summaries as RecipeSummaryModel[];
+    out.map((o) => (o.tags ? null : (o.tags = [])));
+    return out;
+  });
 }
 
 export async function GetRecipe(recipeId: number): Promise<RecipeModel> {
@@ -53,10 +51,14 @@ export async function GetRecipe(recipeId: number): Promise<RecipeModel> {
 
   return GetResponse(request).then((res) => {
     const out = res.Recipe;
-    out.ingredientSections = out.ingredientSections? out.ingredientSections : [];
-    out.tags = out.tags? out.tags.map((d: string) => ({ value: d })) : [];
-    out.directions = out.directions? out.directions.map((d: string) => ({ value: d })) : [];
-    out.notes = out.notes? out.notes.map((n: string) => ({ value: n })) : [];
+    out.ingredientSections = out.ingredientSections
+      ? out.ingredientSections
+      : [];
+    out.tags = out.tags ? out.tags.map((d: string) => ({ value: d })) : [];
+    out.directions = out.directions
+      ? out.directions.map((d: string) => ({ value: d }))
+      : [];
+    out.notes = out.notes ? out.notes.map((n: string) => ({ value: n })) : [];
     return out as RecipeModel;
   });
 }
@@ -80,11 +82,7 @@ export async function UpdateRecipe(recipeId: number, recipe: RecipeModel) {
 export async function PostRecipe(recipe: RecipeModel): Promise<number> {
   const body = parseBody(recipe);
 
-  const request: RequestInfo = BuildRequest(
-    "POST",
-    `/recipes`,
-    body
-  );
+  const request: RequestInfo = BuildRequest("POST", `/recipes`, body);
   return GetResponse(request).then((res) => res.ID as number);
 }
 
