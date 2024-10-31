@@ -1,6 +1,5 @@
-import { ActivityIndicator, Button, StyleSheet, TextInput } from "react-native";
+import { ActivityIndicator, Button, StyleSheet } from "react-native";
 
-import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,8 +9,8 @@ import { RecipeExtractor } from "@/libraries/recipeExtractor";
 import { getLocalStorage } from "@/libraries/localStorage";
 import { router } from "expo-router";
 import { useState } from "react";
-import { RecipeModel } from "@/models/mugcakeApiModels";
 import ParallaxStaticView from "@/components/ParallaxStaticView";
+import { GetExtractorKey } from "@/libraries/mugcakeApi";
 
 export default function HomeScreen() {
   const {
@@ -79,13 +78,12 @@ export default function HomeScreen() {
             title="Import"
             onPress={handleSubmit(async (data) => {
               setError(undefined);
-              console.log(`Fetching recipe from url ${data.href}`);
-              const extractor = new RecipeExtractor(
-                process.env.EXPO_PUBLIC_GEMINI_API_KEY
-              );
+              const apiKey = await GetExtractorKey();
 
+              console.log(`Fetching recipe from url ${data.href}`);
               setProcessing(true);
               try {
+                const extractor = new RecipeExtractor(apiKey);
                 const recipe = await extractor.boilDownRecipe(
                   data.href.toString()
                 );
@@ -95,12 +93,14 @@ export default function HomeScreen() {
 
                 console.log("Redirecting to New Recipe Edit screen.");
                 router.navigate("/recipe/new");
-              } catch (err: any) {
-                console.error(err)
+              } 
+              catch (err: any) {
+                console.error(err);
                 let message = "Unknown Error";
                 if (err instanceof Error) message = err.message;
                 setError(message);
-              } finally {
+              } 
+              finally {
                 setProcessing(false);
               }
             })}

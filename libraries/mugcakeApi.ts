@@ -3,11 +3,10 @@ import { RecipeModel, RecipeSummaryModel } from "@/models/mugcakeApiModels";
 const baseUrl = process.env.EXPO_PUBLIC_MUGCAKE_API_URL;
 
 function BuildRequest(
-  method: "GET" | "POST" | "DELETE" | "PUT",
+  method: "GET" | "POST" | "DELETE" | "PUT" | "PATCH",
   endpoint: string,
   body?: string
 ) {
-  console.debug(`Body : ${body}`);
   const headers: Headers = new Headers();
   // Add a few headers
   headers.set("Content-Type", "application/json");
@@ -20,6 +19,7 @@ function BuildRequest(
   });
 
   console.log("Performing following request : " + req.method + " " + req.url);
+  console.debug(`Body : ${body}`);
   return req;
 }
 
@@ -28,7 +28,7 @@ async function GetResponse(request: Request) {
     return fetch(request)
       .then((res) => res.json())
       .then((res) => {
-        console.log(`${request.method} request got ${JSON.stringify(res)}`);
+        console.debug(`${request.method} request got ${JSON.stringify(res)}`);
         return res;
       });
   } catch (err) {
@@ -36,12 +36,22 @@ async function GetResponse(request: Request) {
   }
 }
 
+export async function GetExtractorKey(): Promise<string> {
+  const request: RequestInfo = BuildRequest("GET", "/extractor/key");
+  return GetResponse(request).then((res) => {
+    return res.Key as string;
+  });
+}
+
 export async function GetRecipeSummaries(): Promise<RecipeSummaryModel[]> {
   const request: RequestInfo = BuildRequest("GET", "/recipes/summaries");
 
   return GetResponse(request).then((res) => {
     const out = res.Summaries as RecipeSummaryModel[];
-    out.map((o) => (o.tags ? null : (o.tags = [])));
+    out.map((o) => {
+      if (!o.tags) o.tags = [];
+      if (!o.favorite) o.favorite = false;
+    });
     return out;
   });
 }
@@ -75,6 +85,14 @@ export async function UpdateRecipe(recipeId: number, recipe: RecipeModel) {
     "PUT",
     `/recipes/${recipeId}`,
     body
+  );
+  return fetch(request);
+}
+
+export async function PatchRecipe(recipeId: number, favorite: boolean) {
+  const request: RequestInfo = BuildRequest(
+    "PATCH",
+    `/recipes/${recipeId}?favorite=${favorite}`
   );
   return fetch(request);
 }

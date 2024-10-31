@@ -13,6 +13,7 @@ import { AntDesign } from "@expo/vector-icons";
 import ContextMenuProvider from "../contextMenu/ContextMenuProvider";
 import alert from "@/libraries/alert";
 import VibratingPressable from "../VibratingPressable";
+import FavoriteButton from "./FavoriteButton";
 
 export default function RecipeCard({
   summary,
@@ -112,14 +113,7 @@ export default function RecipeCard({
         </RecipeCardContextMenu>
       </ThemedView>
       <ThemedView style={styles.favoriteIcon}>
-        {/* TODO : switch the state of Favorite */}
-        <Pressable>
-          <AntDesign
-            name={favorite ? "star" : "staro"}
-            size={20}
-            color={"gold"}
-          />
-        </Pressable>
+        <FavoriteButton {...{recipeId, favorite}}/>
       </ThemedView>
     </ThemedView>
   );

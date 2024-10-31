@@ -1,4 +1,3 @@
-import { randomUUID } from "expo-crypto";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import { ThemedView } from "@/components/ThemedView";
 import { Editable } from "./EditableList";
