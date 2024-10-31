@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -28,11 +28,17 @@ async function searchRecipes(text: string) {
 export default function SearchTabScreen() {
   const { query = "" }: { query: string } = useLocalSearchParams();
   const [searchResults, setSearchResults] = useState<RecipeSummaryModel[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   useEffect(() => {
     async function search() {
+      setIsSearching(true);
       console.log("Querying API");
-      const result = await searchRecipes(query);
-      setSearchResults(result);
+      try {
+        const result = await searchRecipes(query);
+        setSearchResults(result);
+      } finally {
+        setIsSearching(false);
+      }
     }
 
     search().catch(console.error);
@@ -48,17 +54,31 @@ export default function SearchTabScreen() {
     >
       <ThemedView style={styles.searchHeaderContainer}>
         <SearchBar query={query} />
-        <ThemedText>
-          {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
-        </ThemedText>
+        <ThemedView style={{flexDirection: 'row'}}>
+          <ThemedText>
+            {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
+          </ThemedText>
+          <ThemedView>
+            {isSearching && <ActivityIndicator size={30} style={{position: 'absolute', left: 8}} />}
+          </ThemedView>
+        </ThemedView>
       </ThemedView>
 
-      <ThemedList
-        style={styles.recipeCardsContainer}
-        data={searchResults}
-        scrollEnabled={false}
-        renderItem={({ item }) => <RecipeCard summary={item} onDelete={() => {setSearchResults(searchResults.filter(r => r !== item))}} />}
-      />
+      <ThemedView>
+        <ThemedList
+          style={styles.recipeCardsContainer}
+          data={searchResults}
+          scrollEnabled={false}
+          renderItem={({ item }) => (
+            <RecipeCard
+              summary={item}
+              onDelete={() => {
+                setSearchResults(searchResults.filter((r) => r !== item));
+              }}
+            />
+          )}
+        />
+      </ThemedView>
     </ParallaxScrollView>
   );
 }
