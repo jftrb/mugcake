@@ -1,7 +1,12 @@
-import gemini from "@google/generative-ai";
 import { GeminiRecipe } from "@/types/geminiTypes";
-import { addTimes, parseIngredientSection, parseTag, parseTime } from "./geminiParsers";
+import {
+  addTimes,
+  parseIngredientSection,
+  parseTag,
+  parseTime,
+} from "./geminiParsers";
 import { RecipeModel } from "@/models/mugcakeApiModels";
+import { getGeminiResponse, getGptResponse } from "./llmModels";
 
 export class RecipeExtractor {
   private gemini_api_key?: string;
@@ -11,7 +16,7 @@ export class RecipeExtractor {
   }
 
   async boilDownRecipe(url: string): Promise<RecipeModel> {
-    const json = await this.promptGeminiForRecipe(url);
+    const json = await this.promptLlmForRecipe(url);
     const { prepTime, cookTime, yields, ...rest } =
       this.convertJSONtoRecipe(json);
     return {
@@ -32,7 +37,7 @@ export class RecipeExtractor {
     try {
       geminiRecipe = JSON.parse(recipeJSON, function (prop, value) {
         if (prop === "image_url") {
-          console.debug("Caught badly formed JSON from Gemini")
+          console.debug("Caught badly formed JSON from Gemini");
           this["imageUrl"] = value;
         } else {
           return value;
@@ -47,7 +52,7 @@ export class RecipeExtractor {
     return {
       title: geminiRecipe.title,
       imageSource: geminiRecipe.imageUrl,
-      tags: geminiRecipe.tags.map(t => ({id: "", value: parseTag(t)})),
+      tags: geminiRecipe.tags.map((t) => ({ id: "", value: parseTag(t) })),
       prepTime: parseTime(geminiRecipe.prepTime),
       cookTime: parseTime(geminiRecipe.cookTime),
       yields: `${geminiRecipe.yield}`,
@@ -64,42 +69,35 @@ export class RecipeExtractor {
   }
 
   // TODO : fallback to initial page if printed version is bad
-  async promptGeminiForRecipe(url: string) {
-    const genAI = new gemini.GoogleGenerativeAI(this.gemini_api_key as string);
-
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash-latest",
-    });
-
+  async promptLlmForRecipe(url: string) {
     const webPage = await getWebPage(url);
     const trimmedWebPage = trimWebPage(webPage);
     console.debug(`Trimmed page length ${trimmedWebPage.length}`);
 
-    try {
-      const result = await model.generateContent(`Provide to me in JSON format 
-        the recipe title, 
+    const prompt = `You are an expert at parsing HTML.
+        Provide to me in JSON format 
+        the recipe title named title, 
         the recipe image url named imageUrl, 
         the preparation time named prepTime,
         the cooking time named cookTime, 
         the yield, 
-        the recipe instructions as a string array, 
+        the recipe instructions as a string array named instructions, 
         2 to 3 tags (for example the main dish protein, the dish nationality, whether it is a side/main course/dessert, etc.) as a string array,
-        and the recipe notes as written in a string array from the following HTML page.
-        Also include the recipe ingredients in the following JSON layout : {header: string, ingredients: {"quantity", "unit", "name", "other" }[]}[]: 
+        and the recipe notes as written in a string array named notes from the following HTML page.
+        Also include the recipe ingredients named ingredients in the following JSON layout : {header: string, ingredients: {"quantity", "unit", "name", "other" }[]}[]: 
         \n${trimmedWebPage}
-        You can reuse text from the prompt without issue.
-        If no recipe is present, do not invent one. 
-        I repeat : do not hallucinate a recipe if none is found in the HTML.`);
+        You can reuse text from the prompt without issue.`;
 
-      const geminiResponse = result.response.text();
-      console.log(geminiResponse);
-      const recipeJSON = geminiResponse
-        .replaceAll("```", "")
-        .replace("json", "");
-      return recipeJSON;
-    } catch (err) {
-      throw new Error("Error while prompting Gemini", { cause: err });
+    let response: string;
+    try {
+      response = await getGeminiResponse(prompt, this.gemini_api_key as string);
+    } catch {
+      response = await getGptResponse(prompt);
     }
+
+    console.debug(response);
+    const recipeJSON = response.replaceAll("```", "").replace("json", "");
+    return recipeJSON;
   }
 }
 
@@ -112,7 +110,7 @@ async function getWebPage(url: string) {
   // const printableWebPage = await getPrintableVersion(initialWebPage);
   // console.debug(`Printable web page length ${printableWebPage.length}`);
 
-  return initialWebPage
+  return initialWebPage;
 }
 
 async function getPrintableVersion(initialPage: string) {
