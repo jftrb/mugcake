@@ -11,17 +11,18 @@ import { useEffect } from "react";
 export default function HomeScreen() {
   const router = useRouter();
 
-  const { hasShareIntent } = useShareIntentContext();
+  const { hasShareIntent, shareIntent, resetShareIntent } = useShareIntentContext();
 
   useEffect(() => {
     if (hasShareIntent) {
-      // we want to handle share intent event in a specific page
-      router.replace({
-        pathname: "/new",
-      });
+      console.debug(shareIntent);
+      if (shareIntent.webUrl) {
+        router.navigate(`/new?query=${shareIntent.webUrl}`);
+      }
+      resetShareIntent()
     }
-  }, [hasShareIntent]);
-  
+  }, [router, hasShareIntent, shareIntent, resetShareIntent]);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}

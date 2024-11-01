@@ -7,11 +7,15 @@ import { Controller, useForm } from "react-hook-form";
 import { RecipeExtractor } from "@/libraries/recipeExtractor";
 import { getLocalStorage } from "@/libraries/localStorage";
 import { router, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import ParallaxStaticView from "@/components/ParallaxStaticView";
 import { GetExtractorKey } from "@/libraries/mugcakeApi";
-import { useShareIntentContext } from "expo-share-intent";
 import ClearableTextInput from "@/components/ClearableTextInput";
+
+type FormParams = {
+  href: string
+}
+
 
 export default function NewRecipeScreen() {
   const { query = "" }: { query: string } = useLocalSearchParams();
@@ -19,19 +23,12 @@ export default function NewRecipeScreen() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<URL>({
-    defaultValues: { href: query },
+  } = useForm<FormParams>({
+    values: { href: query },
   });
   const storage = getLocalStorage();
   const [processing, setProcessing] = useState(false);
   const [errorMessage, setError] = useState<string>();
-
-  const { hasShareIntent, shareIntent, error, resetShareIntent } =
-    useShareIntentContext();
-  console.debug(hasShareIntent);
-  console.debug(shareIntent);
-  console.debug(error);
-  resetShareIntent();
 
   return (
     <ParallaxStaticView
@@ -56,14 +53,14 @@ export default function NewRecipeScreen() {
             name="href"
             control={control}
             rules={{
-              required: { value: true, message: "URL is required" },
               pattern: {
                 value:
-                  /^((ftp|http(s)?):\/\/)?((www|[A-z]+)\.)?([A-z]+)\.([A-z]{2,})/,
+                  /^((ftp|http(s)?):\/\/)?((www|[A-z]+)\.)?([A-z]+)\.([A-z]{2,})?/,
                 message: "Enter a valid URL",
               },
             }}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value } }) => {
+              return (
               <ClearableTextInput
                 onChangeText={onChange}
                 onBlur={onBlur}
@@ -84,7 +81,7 @@ export default function NewRecipeScreen() {
                 placeholderTextColor="#bbbbbb"
                 value={value}
               />
-            )}
+            )}}
           />
           <Button
             title="Import"
@@ -121,7 +118,9 @@ export default function NewRecipeScreen() {
             {errors.href?.message}
           </ThemedText>
         )}
-        {errorMessage && <ThemedText style={{ color: "red" }}>{errorMessage}</ThemedText>}
+        {errorMessage && (
+          <ThemedText style={{ color: "red" }}>{errorMessage}</ThemedText>
+        )}
       </ThemedView>
 
       {processing && (
