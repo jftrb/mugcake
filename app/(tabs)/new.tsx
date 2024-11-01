@@ -7,9 +7,10 @@ import { Controller, useForm } from "react-hook-form";
 import { RecipeExtractor } from "@/libraries/recipeExtractor";
 import { getLocalStorage } from "@/libraries/localStorage";
 import { router, useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ParallaxStaticView from "@/components/ParallaxStaticView";
 import { GetExtractorKey } from "@/libraries/mugcakeApi";
+import { useShareIntentContext } from "expo-share-intent";
 import ClearableTextInput from "@/components/ClearableTextInput";
 
 export default function NewRecipeScreen() {
@@ -23,7 +24,14 @@ export default function NewRecipeScreen() {
   });
   const storage = getLocalStorage();
   const [processing, setProcessing] = useState(false);
-  const [error, setError] = useState<string>();
+  const [errorMessage, setError] = useState<string>();
+
+  const { hasShareIntent, shareIntent, error, resetShareIntent } =
+    useShareIntentContext();
+  console.debug(hasShareIntent);
+  console.debug(shareIntent);
+  console.debug(error);
+  resetShareIntent();
 
   return (
     <ParallaxStaticView
@@ -113,7 +121,7 @@ export default function NewRecipeScreen() {
             {errors.href?.message}
           </ThemedText>
         )}
-        {error && <ThemedText style={{ color: "red" }}>{error}</ThemedText>}
+        {errorMessage && <ThemedText style={{ color: "red" }}>{errorMessage}</ThemedText>}
       </ThemedView>
 
       {processing && (
