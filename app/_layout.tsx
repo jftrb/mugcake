@@ -4,13 +4,14 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ShareIntentProvider } from "expo-share-intent";
+import { getLocalStorage } from "@/libraries/localStorage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +23,7 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    getLocalStorage().clearAll() // TODO : Verify if this is bad if I want to cache stuff later on
     if (loaded) {
       SplashScreen.hideAsync();
     }

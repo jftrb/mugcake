@@ -10,6 +10,7 @@ import {
   Controller,
   useFieldArray,
   UseFieldArrayRemove,
+  ValidationRule,
 } from "react-hook-form";
 import { ThemedText } from "@/components/ThemedText";
 import { Pressable, StyleProp, TextStyle } from "react-native";
@@ -31,12 +32,16 @@ const EditableIngredient = ({
 }) => {
   function controlField(
     name: "quantity" | "unit" | "ingredient" | "other",
-    style: StyleProp<TextStyle>
+    style: StyleProp<TextStyle>,
+    validation?: ValidationRule<RegExp>,
   ) {
     return (
       <Controller
         control={control}
         name={`ingredientSections.${sectionIndex}.ingredients.${index}.${name}`}
+        rules={{
+          pattern: validation
+        }}
         render={({ field: { onChange, onBlur, value } }) => (
           <ThemedTextInput
             style={style}
@@ -62,6 +67,9 @@ const EditableIngredient = ({
         width: 40,
         marginRight: 6,
         borderWidth: 0.5,
+      }, {
+        value: /^(\d+(\.\d+)?)$|^(\d+\/\d+)$/,
+        message: "Invalid quantity format"
       })}
       {controlField("unit", { width: 100, marginRight: 6, borderWidth: 0.5 })}
       {controlField("ingredient", { borderWidth: 0.5, flex: 1 })}
@@ -88,7 +96,7 @@ export default function EditableIngredients({
       <Pressable
         onPress={() => {
           console.log("Adding ingredient");
-          append({ quantity: 1, unit: "", ingredient: "", other: "" });
+          append({ quantity: "", unit: "", ingredient: "", other: "" });
         }}
         style={editStyles.deleteButtonPressArea}
       >

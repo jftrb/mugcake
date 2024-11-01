@@ -1,4 +1,10 @@
-import { RecipeModel, RecipeSummaryModel } from "@/models/mugcakeApiModels";
+import {
+  IngredientSectionModel,
+  RecipeModel,
+  RecipeSummaryModel,
+} from "@/models/mugcakeApiModels";
+import { toFraction } from "./fractions";
+import { parseQuantity } from "./geminiParsers";
 
 const baseUrl = process.env.EXPO_PUBLIC_MUGCAKE_API_URL;
 
@@ -64,6 +70,8 @@ export async function GetRecipe(recipeId: number): Promise<RecipeModel> {
     out.ingredientSections = out.ingredientSections
       ? out.ingredientSections
       : [];
+    convertQuantitiesToStrings(out.ingredientSections);
+
     out.tags = out.tags ? out.tags.map((d: string) => ({ value: d })) : [];
     out.directions = out.directions
       ? out.directions.map((d: string) => ({ value: d }))
@@ -71,6 +79,19 @@ export async function GetRecipe(recipeId: number): Promise<RecipeModel> {
     out.notes = out.notes ? out.notes.map((n: string) => ({ value: n })) : [];
     return out as RecipeModel;
   });
+}
+
+function convertQuantitiesToStrings(sections: any): any {
+  sections.map((s: any) =>
+    s.ingredients.map((i: any) => {
+      if (Number(i.quantity) === 0) i.quantity = "";
+      else if (Number(i.quantity) < 1) {
+        i.quantity = toFraction(Number(i.quantity));
+      } else {
+        i.quantity = i.quantity.toString();
+      }
+    })
+  );
 }
 
 export async function DeleteRecipe(recipeId: number) {
@@ -112,7 +133,7 @@ function parseBody(recipe: RecipeModel) {
     imageSource: recipe.imageSource,
     tags: recipe.tags.map((t) => t.value),
     prepInfo: recipe.prepInfo,
-    ingredientSections: recipe.ingredientSections,
+    ingredientSections: convertFractionsToQuantities(recipe.ingredientSections),
     directions: recipe.directions.map((d) => d.value),
     notes: recipe.notes.map((n) => n.value),
   };
@@ -121,6 +142,18 @@ function parseBody(recipe: RecipeModel) {
   } catch (error) {
     console.error(error);
   }
+}
+
+function convertFractionsToQuantities(sections: IngredientSectionModel[]) {
+  return sections.map((s) => {
+    return {
+      header: s.header,
+      ingredients: s.ingredients.map((i) => {
+        const { quantity, ...rest } = i;
+        return { quantity: parseQuantity(quantity), ...rest };
+      }),
+    };
+  });
 }
 
 export function parseCapitalJSON(text: string): any {

@@ -25,7 +25,7 @@ export type RecipeSummaryModel = {
 };
 
 export interface IngredientModel {
-  quantity: number;
+  quantity: string;
   unit: string;
   ingredient: string;
   other: string;

@@ -4,15 +4,17 @@ import { ThemedView } from "../ThemedView";
 import { ThemedList } from "../ThemedList";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { IngredientModel } from "@/models/mugcakeApiModels";
-import { toFraction } from "@/libraries/fractions";
+import { parseQuantity } from "@/libraries/geminiParsers";
 
 function Ingredient({ quantity, unit, ingredient, other }: IngredientModel) {
+  const formattedIngredient = formatIngredient(quantity, unit, ingredient)
+
   return (
     <ThemedView style={ingredientStyles.ingredientContainer}>
       <BouncyCheckbox
         textComponent={
           <ThemedText style={ingredientStyles.textContainer}>
-            {parseIngredient(quantity, unit, ingredient)}
+            {formattedIngredient}
           </ThemedText>
         }
         textStyle={{ textDecorationLine: "none", color: "red" }}
@@ -21,13 +23,12 @@ function Ingredient({ quantity, unit, ingredient, other }: IngredientModel) {
   );
 }
 
-function parseIngredient(quantity: number, unit: string, ingredient: string) {
-  if (quantity === 0) return ingredient;
+function formatIngredient(quantity: string, unit: string, ingredient: string): string {
+  const quant = parseQuantity(quantity)
+  if (quant === 0) return ingredient;
 
-  const fractionedQuantity =
-    quantity < 1 && quantity > 0 ? toFraction(quantity, 0.1) : quantity;
-  if (unit === "") return `${fractionedQuantity} ${ingredient}`;
-  return `(${fractionedQuantity} ${unit}) ${ingredient}`;
+  if (unit === "") return `${quantity} ${ingredient}`;
+  return `(${quantity} ${unit}) ${ingredient}`;
 }
 
 export default function Ingredients({

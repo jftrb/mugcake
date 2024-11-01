@@ -16,7 +16,6 @@ type FormParams = {
   href: string
 }
 
-
 export default function NewRecipeScreen() {
   const { query = "" }: { query: string } = useLocalSearchParams();
   const {
