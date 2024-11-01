@@ -89,11 +89,8 @@ export class RecipeExtractor {
         You can reuse text from the prompt without issue.`;
 
     let response: string;
-    try {
-      response = await getGeminiResponse(prompt, this.gemini_api_key as string);
-    } catch {
-      response = await getGptResponse(prompt);
-    }
+    response = await getGeminiResponse(prompt, this.gemini_api_key as string);
+    // response = await getGptResponse(prompt);
 
     console.debug(response);
     const recipeJSON = response.replaceAll("```", "").replace("json", "");
