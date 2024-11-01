@@ -54,7 +54,7 @@ export default function SearchTabScreen() {
     >
       <ThemedView style={styles.searchHeaderContainer}>
         <SearchBar query={query} />
-        <ThemedView style={{flexDirection: 'row'}}>
+        <ThemedView style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
           <ThemedText>
             {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
           </ThemedText>

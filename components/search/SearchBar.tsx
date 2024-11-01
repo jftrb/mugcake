@@ -1,10 +1,10 @@
-import { Pressable, StyleSheet, TextInput } from "react-native";
+import { StyleSheet } from "react-native";
 import { ImageButton } from "../ImageButton";
 import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
 import { useState } from "react";
 import { router } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
+import ClearableTextInput from "../ClearableTextInput";
 
 export default function SearchBar({ query }: { query: string }) {
   const [searchText, setSearchText] = useState(query);
@@ -18,18 +18,13 @@ export default function SearchBar({ query }: { query: string }) {
   return (
     <ThemedView style={styles.titleContainer}>
       <ThemedText type="title">Search</ThemedText>
-      <ThemedView style={styles.searchContainer}>
-        <TextInput
-        style={[styles.searchBox, {}]}
+        <ClearableTextInput
+          style={styles.searchContainer}
           defaultValue={query}
           onChangeText={setSearchText}
           onSubmitEditing={() => submitSearch(searchText)}
+          onClear={() => submitSearch("")}
         />
-        <Pressable style={{alignSelf: 'center', position: 'absolute', marginRight: 4, padding: 4}}
-        onPress={() => submitSearch("")}>
-          <MaterialIcons name="clear" size={16}/>
-        </Pressable>
-      </ThemedView>
       <ImageButton
         onPress={() => submitSearch(searchText)}
         source={require("@/assets/images/search-icon.png")}
@@ -43,17 +38,12 @@ export default function SearchBar({ query }: { query: string }) {
 
 const styles = StyleSheet.create({
   searchContainer: {
-    flexDirection: 'row-reverse',
     flex: 1,
     borderWidth: 0.5,
-    borderRadius: 16,
+    borderRadius: 16.5,
     backgroundColor: "white",
-  },
-  searchBox: {
-    flex: 1,
     paddingLeft: 8,
     paddingRight: 8,
-    borderRadius: 16,
   },
   titleContainer: {
     flexDirection: "row",

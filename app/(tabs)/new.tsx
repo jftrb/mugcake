@@ -3,22 +3,23 @@ import { ActivityIndicator, Button, StyleSheet } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Ionicons } from "@expo/vector-icons";
-import { ThemedTextInput } from "@/components/ThemedTextInput";
 import { Controller, useForm } from "react-hook-form";
 import { RecipeExtractor } from "@/libraries/recipeExtractor";
 import { getLocalStorage } from "@/libraries/localStorage";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import ParallaxStaticView from "@/components/ParallaxStaticView";
 import { GetExtractorKey } from "@/libraries/mugcakeApi";
+import ClearableTextInput from "@/components/ClearableTextInput";
 
-export default function HomeScreen() {
+export default function NewRecipeScreen() {
+  const { query = "" }: { query: string } = useLocalSearchParams();
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm<URL>({
-    defaultValues: { href: "" },
+    defaultValues: { href: query },
   });
   const storage = getLocalStorage();
   const [processing, setProcessing] = useState(false);
@@ -55,18 +56,21 @@ export default function HomeScreen() {
               },
             }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <ThemedTextInput
+              <ClearableTextInput
                 onChangeText={onChange}
                 onBlur={onBlur}
+                onClear={() => {
+                  onChange("");
+                  router.navigate("/new");
+                }}
                 autoCapitalize="none"
                 autoComplete="url"
                 autoCorrect={false}
                 style={{
                   borderWidth: 0.5,
                   flex: 1,
-                  paddingHorizontal: 4,
+                  paddingLeft: 4,
                   backgroundColor: "white",
-                  color: "black",
                 }}
                 placeholder="https://www.mugcake.com"
                 placeholderTextColor="#bbbbbb"
@@ -93,14 +97,12 @@ export default function HomeScreen() {
 
                 console.log("Redirecting to New Recipe Edit screen.");
                 router.navigate("/recipe/new");
-              } 
-              catch (err: any) {
+              } catch (err: any) {
                 console.error(err);
                 let message = "Unknown Error";
                 if (err instanceof Error) message = err.message;
                 setError(message);
-              } 
-              finally {
+              } finally {
                 setProcessing(false);
               }
             })}
