@@ -81,7 +81,7 @@ export async function GetRecipe(recipeId: number): Promise<RecipeModel> {
   });
 }
 
-function convertQuantitiesToStrings(sections: any): any {
+export function convertQuantitiesToStrings(sections: any): any {
   sections.map((s: any) =>
     s.ingredients.map((i: any) => {
       if (Number(i.quantity) === 0) i.quantity = "";

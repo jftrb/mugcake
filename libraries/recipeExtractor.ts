@@ -6,7 +6,8 @@ import {
   parseTime,
 } from "./geminiParsers";
 import { RecipeModel } from "@/models/mugcakeApiModels";
-import { getGeminiResponse, getGptResponse } from "./llmModels";
+import { getGeminiResponse } from "./llmModels";
+import { convertQuantitiesToStrings } from "./mugcakeApi";
 
 export class RecipeExtractor {
   private gemini_api_key?: string;
@@ -17,12 +18,14 @@ export class RecipeExtractor {
 
   async boilDownRecipe(url: string): Promise<RecipeModel> {
     const json = await this.promptLlmForRecipe(url);
-    const { prepTime, cookTime, yields, ...rest } =
+    const { prepTime, cookTime, yields, ingredientSections, ...rest } =
       this.convertJSONtoRecipe(json);
+    convertQuantitiesToStrings(ingredientSections)
     return {
       ...rest,
       favorite: false,
       url: url,
+      ingredientSections: ingredientSections,
       prepInfo: {
         prepTime: prepTime.toString(),
         cookTime: cookTime.toString(),
@@ -74,8 +77,7 @@ export class RecipeExtractor {
     const trimmedWebPage = trimWebPage(webPage);
     console.debug(`Trimmed page length ${trimmedWebPage.length}`);
 
-    const prompt = `You are an expert at parsing HTML.
-        Provide to me in JSON format 
+    const prompt = `Provide to me in JSON format 
         the recipe title named title, 
         the recipe image url named imageUrl, 
         the preparation time named prepTime,

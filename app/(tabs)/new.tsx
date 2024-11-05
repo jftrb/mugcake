@@ -54,7 +54,7 @@ export default function NewRecipeScreen() {
             rules={{
               pattern: {
                 value:
-                  /^((ftp|http(s)?):\/\/)?((www|[A-z]+)\.)?([A-z]+)\.([A-z]{2,})?/,
+                  /^((ftp|http(s)?):\/\/)?((www|[A-z]+)\.)?([A-z\d]+)\.([A-z]{2,})?/,
                 message: "Enter a valid URL",
               },
             }}
