@@ -1,4 +1,10 @@
-import { Image, Pressable, StyleSheet } from "react-native";
+import {
+  Image,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  ViewStyle,
+} from "react-native";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
 import PrepCard from "../recipe/PrepCard";
@@ -34,9 +40,10 @@ export default function RecipeCard({
   function PressHandler({ children }: { children: React.ReactNode }) {
     return (
       <VibratingPressable
-        longPressPattern={10}
+        style={{ flex: 1 }}
+        longPressPattern={5}
         onLongPress={() => {}}
-        pressPattern={10}
+        pressPattern={5}
         onPress={async () => {
           await PreLoadRecipe(recipeId);
           router.navigate(`/recipe/${recipeId}`);
@@ -49,7 +56,7 @@ export default function RecipeCard({
 
   return (
     <ThemedView style={[styles.horizontal, dynamicStyle.border, styles.border]}>
-      <ThemedView style={[styles.horizontal, , { flex: 1, padding: 4 }]}>
+      <ThemedView style={[styles.horizontal, { flex: 1, padding: 4 }]}>
         {/* Image */}
         <ThemedView style={{ alignSelf: "center" }}>
           <RecipeCardContextMenu {...summary} onDelete={onDelete}>
@@ -61,8 +68,12 @@ export default function RecipeCard({
 
         {/* Middle part */}
         <ThemedView style={styles.descriptionContainer}>
-          <ThemedView style={{ marginVertical: 4 }}>
-            <RecipeCardContextMenu {...summary} onDelete={onDelete}>
+          <ThemedView style={{ padding: 4, paddingTop: 2, flex: 1 }}>
+            <RecipeCardContextMenu
+              {...summary}
+              style={{ flex: 1 }}
+              onDelete={onDelete}
+            >
               <PressHandler>
                 <ThemedText type="defaultSemiBold" style={{ height: 48 }}>
                   {title}
@@ -71,9 +82,9 @@ export default function RecipeCard({
             </RecipeCardContextMenu>
           </ThemedView>
           {/* Tags */}
-          <ThemedView style={{ marginBottom: -2, marginTop: 0 }}>
+          <ThemedView style={styles.tagContainer}>
             <ThemedList
-              style={styles.tagContainer}
+              style={{ columnGap: 8 }}
               showsHorizontalScrollIndicator={false}
               horizontal
               data={tags}
@@ -112,7 +123,7 @@ export default function RecipeCard({
         </RecipeCardContextMenu>
       </ThemedView>
       <ThemedView style={styles.favoriteIcon}>
-        <FavoriteButton {...{recipeId, favorite}}/>
+        <FavoriteButton {...{ recipeId, favorite }} />
       </ThemedView>
     </ThemedView>
   );
@@ -122,10 +133,16 @@ function RecipeCardContextMenu({
   recipeId,
   title,
   onDelete,
+  style,
   children,
-}: RecipeSummaryModel & { onDelete: () => void; children: React.ReactNode }) {
+}: RecipeSummaryModel & {
+  onDelete: () => void;
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+}) {
   return (
     <ContextMenuProvider
+      style={style}
       actions={[
         {
           title: "Edit",
@@ -204,19 +221,19 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   tagContainer: {
-    columnGap: 8,
+    marginBottom: -2,
+    marginTop: 0,
+    position: "absolute",
+    bottom: 0,
   },
   descriptionContainer: {
     flex: 1,
     justifyContent: "space-between",
-    marginHorizontal: 4,
-    paddingLeft: 8,
-    paddingRight: 8,
+    marginHorizontal: 8,
   },
   tag: {
     padding: 4,
-    paddingLeft: 8,
-    paddingRight: 8,
+    paddingHorizontal: 8,
     borderRadius: 16,
     borderWidth: 1,
     borderStyle: "solid",
