@@ -1,5 +1,5 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { ActivityIndicator, RefreshControl, StyleSheet } from "react-native";
 
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
@@ -9,7 +9,7 @@ import { ThemedList } from "@/components/ThemedList";
 import { useLocalSearchParams } from "expo-router";
 import SearchBar from "@/components/search/SearchBar";
 import { GetRecipeSummaries } from "@/libraries/mugcakeApi";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { RecipeSummaryModel } from "@/models/mugcakeApiModels";
 
 async function searchRecipes(text: string) {
@@ -29,20 +29,28 @@ export default function SearchTabScreen() {
   const { query = "" }: { query: string } = useLocalSearchParams();
   const [searchResults, setSearchResults] = useState<RecipeSummaryModel[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  useEffect(() => {
-    async function search() {
-      setIsSearching(true);
-      console.log("Querying API");
-      try {
-        const result = await searchRecipes(query);
-        setSearchResults(result);
-      } finally {
-        setIsSearching(false);
-      }
-    }
 
+  const search = useCallback(async () => {
+    setIsSearching(true);
+    setSearchResults([])
+    console.log("Querying API");
+    const result = await searchRecipes(query).finally(() =>
+      setIsSearching(false)
+    );
+    setSearchResults(result);
+  }, [query]);
+
+  useEffect(() => {
     search().catch(console.error);
-  }, [query, setSearchResults]);
+  }, [search]);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await search()
+      .catch(console.error)
+      .finally(() => setRefreshing(false));
+  }, [search]);
 
   return (
     <ParallaxScrollView
@@ -54,12 +62,19 @@ export default function SearchTabScreen() {
     >
       <ThemedView style={styles.searchHeaderContainer}>
         <SearchBar query={query} />
-        <ThemedView style={{flexDirection: 'row', backgroundColor: 'transparent'}}>
+        <ThemedView
+          style={{ flexDirection: "row", backgroundColor: "transparent" }}
+        >
           <ThemedText>
             {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
           </ThemedText>
           <ThemedView>
-            {isSearching && <ActivityIndicator size={30} style={{position: 'absolute', left: 8}} />}
+            {isSearching && (
+              <ActivityIndicator
+                size={30}
+                style={{ position: "absolute", left: 8 }}
+              />
+            )}
           </ThemedView>
         </ThemedView>
       </ThemedView>
@@ -67,8 +82,14 @@ export default function SearchTabScreen() {
       <ThemedView>
         <ThemedList
           style={styles.recipeCardsContainer}
-          data={searchResults}
+          data={searchResults
+            .sort((r1, r2) => r1.recipeId - r2.recipeId)
+            .sort((r1, r2) => Number(r2.favorite) - Number(r1.favorite))}
           scrollEnabled={false}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          onEndReached={() => console.log("End reached")} // TODO : implement paginated results
+          onEndReachedThreshold={1}
           renderItem={({ item }) => (
             <RecipeCard
               summary={item}

@@ -39,10 +39,16 @@ export default function RecipeCard({
     },
   });
 
-  function PressHandler({ children }: { children: React.ReactNode }) {
+  function PressHandler({
+    children,
+    style,
+  }: {
+    children: React.ReactNode;
+    style?: StyleProp<ViewStyle>;
+  }) {
     return (
       <VibratingPressable
-        style={{ flex: 1 }}
+        style={style}
         longPressPattern={5}
         onLongPress={() => {}}
         pressPattern={5}
@@ -76,7 +82,7 @@ export default function RecipeCard({
               style={{ flex: 1 }}
               onDelete={onDelete}
             >
-              <PressHandler>
+              <PressHandler style={{flex: 1}}>
                 <ThemedText type="defaultSemiBold" style={{ height: 48 }}>
                   {title}
                 </ThemedText>
@@ -126,12 +132,12 @@ export default function RecipeCard({
       </ThemedView>
       <ThemedView style={styles.favoriteIcon}>
         <FavoriteButton
-          favorite={favorite}
+          favorite={isFavorite}
           onPress={async () => {
             try {
-              await PatchRecipe(recipeId, !isFavorite);
-              summary.favorite = !isFavorite
+              await PatchRecipe(recipeId, !favorite);
               setIsFavorite(!isFavorite);
+              summary.favorite = !favorite;
             } catch (err) {
               console.error(err);
             }
@@ -236,8 +242,8 @@ const styles = StyleSheet.create({
   tagContainer: {
     marginBottom: -2,
     marginTop: 0,
-    position: "absolute",
     bottom: 0,
+    left: 0,
   },
   descriptionContainer: {
     flex: 1,
