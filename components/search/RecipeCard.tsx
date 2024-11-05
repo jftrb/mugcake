@@ -14,11 +14,12 @@ import { Link, router } from "expo-router";
 import { Tag } from "../Tag";
 import { RecipeModel, RecipeSummaryModel } from "@/models/mugcakeApiModels";
 import { getLocalStorage } from "@/libraries/localStorage";
-import { DeleteRecipe, GetRecipe } from "@/libraries/mugcakeApi";
+import { DeleteRecipe, GetRecipe, PatchRecipe } from "@/libraries/mugcakeApi";
 import ContextMenuProvider from "../contextMenu/ContextMenuProvider";
 import alert from "@/libraries/alert";
 import VibratingPressable from "../VibratingPressable";
 import FavoriteButton from "./FavoriteButton";
+import { useState } from "react";
 
 export default function RecipeCard({
   summary,
@@ -30,6 +31,7 @@ export default function RecipeCard({
   const borderColor = useThemeColor({}, "text");
 
   const { recipeId, favorite, title, totalTime, tags, imageSource } = summary;
+  const [isFavorite, setIsFavorite] = useState(favorite);
 
   const dynamicStyle = StyleSheet.create({
     border: {
@@ -123,7 +125,18 @@ export default function RecipeCard({
         </RecipeCardContextMenu>
       </ThemedView>
       <ThemedView style={styles.favoriteIcon}>
-        <FavoriteButton {...{ recipeId, favorite }} />
+        <FavoriteButton
+          favorite={favorite}
+          onPress={async () => {
+            try {
+              await PatchRecipe(recipeId, !isFavorite);
+              summary.favorite = !isFavorite
+              setIsFavorite(!isFavorite);
+            } catch (err) {
+              console.error(err);
+            }
+          }}
+        />
       </ThemedView>
     </ThemedView>
   );
