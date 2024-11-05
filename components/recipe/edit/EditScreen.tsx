@@ -14,7 +14,15 @@ import { useForm } from "react-hook-form";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import { recipeScreenStyles, ribbonIconSize } from "../RecipeScreen";
 
-export default function EditScreen({ id, onSave }: { id: string, onSave: (data: RecipeModel) => void }) {
+export default function EditScreen({
+  id,
+  onSave,
+  alwaysDirty = false,
+}: {
+  id: string;
+  onSave: (data: RecipeModel) => void;
+  alwaysDirty?: boolean;
+}) {
   const navigation = useNavigation();
   const storage = getLocalStorage();
   const recipe: RecipeModel = getRecipe(id);
@@ -28,15 +36,17 @@ export default function EditScreen({ id, onSave }: { id: string, onSave: (data: 
     defaultValues: recipe,
   });
 
+  const dirtyCheck = () => alwaysDirty ? true : isDirty
+
   let changesSaved = false;
   const backHandler: PlatformBackHandler =
     Platform.OS === "web"
       ? new WebBackHandler(
           navigation,
-          () => isDirty,
+          dirtyCheck,
           () => changesSaved
         )
-      : new MobileBackHandler(() => isDirty, router.back);
+      : new MobileBackHandler(dirtyCheck, router.back);
 
   useEffect(() => {
     const backHandlerUnsub = backHandler.setupBackHandler();
@@ -51,11 +61,11 @@ export default function EditScreen({ id, onSave }: { id: string, onSave: (data: 
         <Pressable
           style={recipeScreenStyles.editButton}
           onPress={handleSubmit((data) => {
-            if (isDirty) {
+            if (dirtyCheck()) {
               console.log(`Updating storage value for recipe id : ${id}`);
               storage.set(id, JSON.stringify(data));
               changesSaved = true;
-              onSave(data)
+              onSave(data);
             }
           })}
         >

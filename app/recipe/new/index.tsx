@@ -27,6 +27,7 @@ export default function RecipeEditScreen() {
         console.log("Saving new recipe");
         Send(data);
       }}
+      alwaysDirty
     />
   );
 }

@@ -22,6 +22,7 @@ export default function SearchBar({ query }: { query: string }) {
           style={styles.searchContainer}
           defaultValue={query}
           onChangeText={setSearchText}
+          onEndEditing={() => submitSearch(searchText)}
           onSubmitEditing={() => submitSearch(searchText)}
           onClear={() => submitSearch("")}
         />

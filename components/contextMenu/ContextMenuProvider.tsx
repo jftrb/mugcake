@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform } from "react-native";
+import { Platform, StyleProp, ViewStyle } from "react-native";
 import { ContextMenuAction } from "react-native-context-menu-view";
 
 let MobileContextMenuProvider = WebContextMenuProvider;
@@ -25,17 +25,19 @@ export interface ContextMenuProviderProps {
    */
   actions?: ContextMenuItem[];
   children?: React.ReactNode;
+  style?: StyleProp<ViewStyle>
 }
 
 export default function ContextMenuProvider({
   title,
   actions,
   children,
+  style,
 }: ContextMenuProviderProps) {
   if (Platform.OS === "web") {
     return WebContextMenuProvider({ title, actions, children });
   } else {
-    return MobileContextMenuProvider({ title, actions, children });
+    return MobileContextMenuProvider({ title, actions, style, children });
   }
 }
 
