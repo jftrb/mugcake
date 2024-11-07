@@ -135,9 +135,9 @@ export default function RecipeCard({
           favorite={isFavorite}
           onPress={async () => {
             try {
-              await PatchRecipe(recipeId, !favorite);
+              await PatchRecipe(recipeId, !isFavorite);
               setIsFavorite(!isFavorite);
-              summary.favorite = !favorite;
+              summary.favorite = !isFavorite;
             } catch (err) {
               console.error(err);
             }
@@ -269,9 +269,10 @@ const styles = StyleSheet.create({
     alignContent: "center",
     borderLeftWidth: 1,
     padding: 8,
-    margin: -4,
+    margin: -5,
     borderTopRightRadius: 16,
     borderBottomRightRadius: 16,
+    backgroundColor: 'transparent'
   },
   favoriteIcon: {
     position: "absolute",

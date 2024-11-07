@@ -70,7 +70,7 @@ export default function EditableIngredientSections({
     <ThemedView style={editStyles.contentList}>
       {fields.map((field, index) => (
         <EditableIngredientSection
-          key={index}
+          key={field.id}
           {...{ index, field, remove, control }}
         />
       ))}
