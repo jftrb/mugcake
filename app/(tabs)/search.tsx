@@ -1,7 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { ActivityIndicator, RefreshControl, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 
-import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ParallaxHeader } from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import RecipeCard from "@/components/search/RecipeCard";
@@ -32,17 +32,12 @@ export default function SearchTabScreen() {
 
   const search = useCallback(async () => {
     setIsSearching(true);
-    setSearchResults([])
     console.log("Querying API");
     const result = await searchRecipes(query).finally(() =>
       setIsSearching(false)
     );
     setSearchResults(result);
   }, [query]);
-
-  useEffect(() => {
-    search().catch(console.error);
-  }, [search]);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(async () => {
@@ -52,24 +47,75 @@ export default function SearchTabScreen() {
       .finally(() => setRefreshing(false));
   }, [search]);
 
+  useEffect(() => {
+    search().catch(console.error);
+  }, [search]);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
-      headerImage={
-        <Ionicons size={350} name="search" style={styles.headerImage} />
+    <ThemedList
+      ListHeaderComponent={
+        <SearchHeaderComponent
+          query={query}
+          numberOfResults={searchResults.length}
+          renderIndicator={isSearching}
+        />
       }
-      contentStyle={styles.contentContainer}
-    >
+      ListHeaderComponentStyle={{ margin: -32, marginBottom: 0 }}
+      style={styles.recipeCardsContainer}
+      scrollEventThrottle={16}
+      data={searchResults
+        .sort((r1, r2) => r1.recipeId - r2.recipeId)
+        .sort((r1, r2) => Number(r2.favorite) - Number(r1.favorite))}
+      scrollEnabled={true}
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      onEndReached={() => console.log("End reached")} // TODO : implement paginated results
+      onEndReachedThreshold={1}
+      renderItem={({ item }) => (
+        <ThemedView style={{ marginHorizontal: -16 }}>
+          <RecipeCard
+            key={item.recipeId}
+            summary={item}
+            onDelete={() => {
+              setSearchResults(searchResults.filter((r) => r !== item));
+            }}
+          />
+        </ThemedView>
+      )}
+    />
+  );
+}
+
+function SearchHeaderComponent({
+  query,
+  numberOfResults,
+  renderIndicator,
+}: {
+  query: string;
+  numberOfResults: number;
+  renderIndicator: boolean;
+}) {
+  return (
+    <>
+      <ParallaxHeader
+        headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
+        headerImage={
+          <Ionicons size={350} name="search" style={styles.headerImage} />
+        }
+      />
       <ThemedView style={styles.searchHeaderContainer}>
         <SearchBar query={query} />
         <ThemedView
-          style={{ flexDirection: "row", backgroundColor: "transparent" }}
+          style={{
+            flexDirection: "row",
+          }}
         >
           <ThemedText>
-            {searchResults.length} result{searchResults.length !== 1 ? "s" : ""}
+            {numberOfResults} result
+            {numberOfResults !== 1 ? "s" : ""}
           </ThemedText>
           <ThemedView>
-            {isSearching && (
+            {renderIndicator && (
               <ActivityIndicator
                 size={30}
                 style={{ position: "absolute", left: 8 }}
@@ -78,29 +124,7 @@ export default function SearchTabScreen() {
           </ThemedView>
         </ThemedView>
       </ThemedView>
-
-      <ThemedView>
-        <ThemedList
-          style={styles.recipeCardsContainer}
-          data={searchResults
-            .sort((r1, r2) => r1.recipeId - r2.recipeId)
-            .sort((r1, r2) => Number(r2.favorite) - Number(r1.favorite))}
-          scrollEnabled={false}
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          onEndReached={() => console.log("End reached")} // TODO : implement paginated results
-          onEndReachedThreshold={1}
-          renderItem={({ item }) => (
-            <RecipeCard
-              summary={item}
-              onDelete={() => {
-                setSearchResults(searchResults.filter((r) => r !== item));
-              }}
-            />
-          )}
-        />
-      </ThemedView>
-    </ParallaxScrollView>
+    </>
   );
 }
 
@@ -115,12 +139,14 @@ const styles = StyleSheet.create({
   },
   searchHeaderContainer: {
     paddingHorizontal: 24 - contentPadding,
+    paddingTop: 32,
   },
   contentContainer: {
     paddingHorizontal: contentPadding,
   },
   recipeCardsContainer: {
     rowGap: 12,
+    padding: 32,
     paddingBottom: 4,
   },
 });
