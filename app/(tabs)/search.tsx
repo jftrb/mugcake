@@ -10,46 +10,67 @@ import { useLocalSearchParams } from "expo-router";
 import SearchBar from "@/components/search/SearchBar";
 import { GetRecipeSummaries } from "@/libraries/mugcakeApi";
 import { useCallback, useEffect, useState } from "react";
-import { RecipeSummaryModel } from "@/models/mugcakeApiModels";
+import {
+  RecipeSummaryModel,
+  RecipeSummarySearchParams,
+} from "@/models/mugcakeApiModels";
 
-async function searchRecipes(text: string) {
-  const summaries = await GetRecipeSummaries();
-  console.log(JSON.stringify(summaries));
-  const matches = summaries.filter(
-    (summary) =>
-      summary.title.toLowerCase().includes(text.toLowerCase()) ||
-      summary.tags.map((t) => t.toLowerCase()).includes(text.toLowerCase())
-  );
-
-  console.log(matches);
-  return matches;
+async function searchRecipes({
+  query,
+  limit,
+  cursor,
+  tags,
+}: RecipeSummarySearchParams) {
+  const searchResponse = await GetRecipeSummaries({
+    query,
+    limit,
+    cursor,
+    tags,
+  });
+  console.log(JSON.stringify(searchResponse));
+  return searchResponse;
 }
+
+const defaultSearchLimit = 10
 
 export default function SearchTabScreen() {
   const { query = "" }: { query: string } = useLocalSearchParams();
   const [searchResults, setSearchResults] = useState<RecipeSummaryModel[]>([]);
+  const [incomingResults, setIncomingResults] = useState<RecipeSummaryModel[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [nextCursor, setNextCursor] = useState("");
 
-  const search = useCallback(async () => {
+  const search = useCallback(async (limit: number, cursor: string) => {
     setIsSearching(true);
     console.log("Querying API");
-    const result = await searchRecipes(query).finally(() =>
-      setIsSearching(false)
-    );
-    setSearchResults(result);
+    const result = await searchRecipes({
+      query: query,
+      limit: limit,
+      cursor: cursor,
+      tags: [],
+    }).finally(() => setIsSearching(false));
+
+    setIncomingResults(result.Summaries);
+    setNextCursor(result.NextCursor);
   }, [query]);
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await search()
+    await search(searchResults.length, "")
       .catch(console.error)
       .finally(() => setRefreshing(false));
+  }, [search, searchResults]);
+
+  useEffect(() => {
+    setSearchResults([])
+    console.log("Searching")
+    search(defaultSearchLimit, "").catch(console.error);
   }, [search]);
 
   useEffect(() => {
-    search().catch(console.error);
-  }, [search]);
+    setSearchResults(s => s.concat(incomingResults))
+  }, [incomingResults])
 
   return (
     <ThemedList
@@ -63,14 +84,18 @@ export default function SearchTabScreen() {
       ListHeaderComponentStyle={{ margin: -32, marginBottom: 0 }}
       style={styles.recipeCardsContainer}
       scrollEventThrottle={16}
-      data={searchResults
-        .sort((r1, r2) => r1.recipeId - r2.recipeId)
-        .sort((r1, r2) => Number(r2.favorite) - Number(r1.favorite))}
+      data={searchResults}
+        // .sort((r1, r2) => r1.recipeId - r2.recipeId)
+        // .sort((r1, r2) => Number(r2.favorite) - Number(r1.favorite))}
       scrollEnabled={true}
       refreshing={refreshing}
       onRefresh={onRefresh}
-      onEndReached={() => console.log("End reached")} // TODO : implement paginated results
-      onEndReachedThreshold={1}
+      onEndReached={() => {console.debug("End reached")
+        if (nextCursor !== "") {
+          search(defaultSearchLimit, nextCursor)
+        }
+      }} // TODO : implement paginated results
+      onEndReachedThreshold={0.5}
       renderItem={({ item }) => (
         <ThemedView style={{ marginHorizontal: -16 }}>
           <RecipeCard

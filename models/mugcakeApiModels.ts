@@ -48,3 +48,15 @@ export type TagModel = {
   id: string;
   value: string;
 };
+
+export type RecipeSummarySearchParams = {
+  query: string;
+  limit: number;
+  cursor: string;
+  tags: number[];
+};
+
+export type RecipeSummarySearchResponse = {
+  Summaries: RecipeSummaryModel[];
+  NextCursor: string;
+}

@@ -2,6 +2,8 @@ import {
   IngredientSectionModel,
   RecipeModel,
   RecipeSummaryModel,
+  RecipeSummarySearchParams,
+  RecipeSummarySearchResponse,
 } from "@/models/mugcakeApiModels";
 import { toFraction } from "./fractions";
 import { parseQuantity } from "./geminiParsers";
@@ -49,16 +51,29 @@ export async function GetExtractorKey(): Promise<string> {
   });
 }
 
-export async function GetRecipeSummaries(): Promise<RecipeSummaryModel[]> {
-  const request: RequestInfo = BuildRequest("GET", "/recipes/summaries");
+export async function GetRecipeSummaries({
+  query,
+  limit,
+  cursor,
+  tags,
+}: RecipeSummarySearchParams): Promise<RecipeSummarySearchResponse> {
+  let url = `/recipes/summaries?sortby=0` +
+  `&query=${query}` +
+  `&limit=${limit}` +
+  `&cursor=${cursor.replace("=", "%3d")}`
+  tags.map((t) => url += `tags=${t}`)
+  const request: RequestInfo = BuildRequest(
+    "GET",
+    url
+  );
 
   return GetResponse(request).then((res) => {
-    const out = res.Summaries as RecipeSummaryModel[];
-    out.map((o) => {
+    const summaries = res.Summaries as RecipeSummaryModel[];
+    summaries.map((o) => {
       if (!o.tags) o.tags = [];
       if (!o.favorite) o.favorite = false;
     });
-    return out;
+    return res as RecipeSummarySearchResponse;
   });
 }
 
