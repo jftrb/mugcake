@@ -9,7 +9,7 @@ import { ThemedList } from "@/components/ThemedList";
 import { useLocalSearchParams } from "expo-router";
 import SearchBar from "@/components/search/SearchBar";
 import { GetRecipeSummaries } from "@/libraries/mugcakeApi";
-import { useCallback, useEffect, useState } from "react";
+import { ComponentProps, memo, useCallback, useEffect, useState } from "react";
 import {
   RecipeSummaryModel,
   RecipeSummarySearchParams,
@@ -31,46 +31,56 @@ async function searchRecipes({
   return searchResponse;
 }
 
-const defaultSearchLimit = 10
+const defaultSearchLimit = 10;
 
 export default function SearchTabScreen() {
   const { query = "" }: { query: string } = useLocalSearchParams();
   const [searchResults, setSearchResults] = useState<RecipeSummaryModel[]>([]);
-  const [incomingResults, setIncomingResults] = useState<RecipeSummaryModel[]>([]);
+  const [incomingResults, setIncomingResults] = useState<RecipeSummaryModel[]>(
+    []
+  );
   const [isSearching, setIsSearching] = useState(false);
   const [nextCursor, setNextCursor] = useState("");
 
-  const search = useCallback(async (limit: number, cursor: string) => {
-    setIsSearching(true);
-    console.log("Querying API");
-    const result = await searchRecipes({
-      query: query,
-      limit: limit,
-      cursor: cursor,
-      tags: [],
-    }).finally(() => setIsSearching(false));
+  const search = useCallback(
+    async (limit: number, cursor: string) => {
+      setIsSearching(true);
+      console.log("Querying API");
+      const result = await searchRecipes({
+        query: query,
+        limit: limit,
+        cursor: cursor,
+        tags: [],
+      }).finally(() => setIsSearching(false));
 
-    setIncomingResults(result.Summaries);
-    setNextCursor(result.NextCursor);
-  }, [query]);
+      setIncomingResults(result.Summaries);
+      setNextCursor(result.NextCursor);
+    },
+    [query]
+  );
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    setSearchResults([]);
     await search(searchResults.length, "")
       .catch(console.error)
       .finally(() => setRefreshing(false));
   }, [search, searchResults]);
 
   useEffect(() => {
-    setSearchResults([])
-    console.log("Searching")
+    setSearchResults([]);
+    console.log("Searching");
     search(defaultSearchLimit, "").catch(console.error);
   }, [search]);
 
   useEffect(() => {
-    setSearchResults(s => s.concat(incomingResults))
-  }, [incomingResults])
+    setSearchResults((s) => s.concat(incomingResults));
+  }, [incomingResults]);
+
+  const onDeleteCard = useCallback((recipeId: number) => {
+    setSearchResults(prevResults => prevResults.filter((r) => r.recipeId !== recipeId));
+  }, [])
 
   return (
     <ThemedList
@@ -85,31 +95,37 @@ export default function SearchTabScreen() {
       style={styles.recipeCardsContainer}
       scrollEventThrottle={16}
       data={searchResults}
-        // .sort((r1, r2) => r1.recipeId - r2.recipeId)
-        // .sort((r1, r2) => Number(r2.favorite) - Number(r1.favorite))}
+      // .sort((r1, r2) => r1.recipeId - r2.recipeId)
+      // .sort((r1, r2) => Number(r2.favorite) - Number(r1.favorite))}
       scrollEnabled={true}
       refreshing={refreshing}
       onRefresh={onRefresh}
-      onEndReached={() => {console.debug("End reached")
+      onEndReached={() => {
+        console.debug("End reached");
         if (nextCursor !== "") {
-          search(defaultSearchLimit, nextCursor)
+          search(defaultSearchLimit, nextCursor);
         }
       }} // TODO : implement paginated results
-      onEndReachedThreshold={0.5}
+      onEndReachedThreshold={0.75}
       renderItem={({ item }) => (
-        <ThemedView style={{ marginHorizontal: -16 }}>
-          <RecipeCard
-            key={item.recipeId}
-            summary={item}
-            onDelete={() => {
-              setSearchResults(searchResults.filter((r) => r !== item));
-            }}
-          />
-        </ThemedView>
+        <MemoizedCard 
+          key={item.recipeId}
+          summary={item}
+          onDelete={onDeleteCard}
+        />
       )}
     />
   );
 }
+
+const MemoizedCard = memo(function LocalCard(props : ComponentProps<typeof RecipeCard>) {
+  console.log(`rendering ${props.summary.recipeId}`)
+  return (
+    <ThemedView style={{ marginHorizontal: -16 }}>
+      <RecipeCard {...props}/>
+    </ThemedView>
+  )
+})
 
 function SearchHeaderComponent({
   query,
@@ -163,7 +179,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   searchHeaderContainer: {
-    paddingHorizontal: 24 - contentPadding,
+    paddingHorizontal: 32 - contentPadding,
     paddingTop: 32,
   },
   contentContainer: {

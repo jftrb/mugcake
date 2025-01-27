@@ -19,14 +19,14 @@ import ContextMenuProvider from "../contextMenu/ContextMenuProvider";
 import alert from "@/libraries/alert";
 import VibratingPressable from "../VibratingPressable";
 import FavoriteButton from "./FavoriteButton";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export default function RecipeCard({
   summary,
   onDelete,
 }: {
   summary: RecipeSummaryModel;
-  onDelete: () => void;
+  onDelete: (id: number) => void;
 }) {
   const borderColor = useThemeColor({}, "text");
 
@@ -38,6 +38,8 @@ export default function RecipeCard({
       borderColor: borderColor,
     },
   });
+
+  const onDeletePressed = useCallback(() => onDelete(recipeId), [onDelete, recipeId])
 
   function PressHandler({
     children,
@@ -67,7 +69,7 @@ export default function RecipeCard({
       <ThemedView style={[styles.horizontal, { flex: 1, padding: 4 }]}>
         {/* Image */}
         <ThemedView style={{ alignSelf: "center" }}>
-          <RecipeCardContextMenu {...summary} onDelete={onDelete}>
+          <RecipeCardContextMenu {...summary} onDelete={onDeletePressed}>
             <PressHandler>
               <Image style={styles.image} source={{ uri: imageSource }} />
             </PressHandler>
@@ -80,7 +82,7 @@ export default function RecipeCard({
             <RecipeCardContextMenu
               {...summary}
               style={{ flex: 1 }}
-              onDelete={onDelete}
+              onDelete={onDeletePressed}
             >
               <PressHandler style={{flex: 1}}>
                 <ThemedText type="defaultSemiBold" style={{ height: 48 }}>
@@ -124,7 +126,7 @@ export default function RecipeCard({
           dynamicStyle.border,
         ]}
       >
-        <RecipeCardContextMenu {...summary} onDelete={onDelete}>
+        <RecipeCardContextMenu {...summary} onDelete={onDeletePressed}>
           <PressHandler>
             <PrepCard label="Total Time" value={totalTime}></PrepCard>
           </PressHandler>

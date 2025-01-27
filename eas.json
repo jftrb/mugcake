@@ -9,20 +9,20 @@
       "distribution": "internal",
       "env": {
         "APP_NAME": "Mugcake (dev)",
-        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api"
+        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api/dev"
       }
     },
     "preview": {
       "distribution": "internal",
       "env": {
         "APP_NAME": "Mugcake (Preview)",
-        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api"
+        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api/public"
       }
     },
     "production": {
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app/api"
+        "EXPO_PUBLIC_MUGCAKE_API_URL":"https://frequent-giulietta-jftrb-90c64f7b.koyeb.app//public"
       }
     }
   },
